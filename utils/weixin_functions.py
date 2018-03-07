@@ -5,12 +5,11 @@ import json
 import requests
 from rest_framework import exceptions
 from CpBackend.settings import WX_SMART_CONFIG
-from micro_service.service import AuthorizeServer
 from authentication.models import User
+from ticket.functions import TicketAuthorize
 
 
 class WxInterface:
-
     def __init__(self):
         self.appid = WX_SMART_CONFIG['appid']
         self.secret = WX_SMART_CONFIG['secret']
@@ -32,9 +31,10 @@ class WxInterface:
             user.last_login = datetime.datetime.now()
             user.session_key = res['session_key']
             user.save()
-            ticket = AuthorizeServer.create_ticket(user.id)
+            ticket = TicketAuthorize.create_ticket(user.id)
             return {'user_id': user.id, 'ticket': ticket}
         else:
             raise exceptions.ValidationError('wechat authorize error： %s' % json.dumps(res))
+
 
 WxInterfaceUtil = WxInterface()
