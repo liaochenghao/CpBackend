@@ -1,20 +1,20 @@
 # coding: utf-8
 import datetime
 from secrets import token_hex
-from redis.redis_server import redis_client
+from redis_tool.redis_server import redis_client
 from ticket.sql import ticket_sql
 
 
 class TicketAuthorize:
     @staticmethod
-    async def validate_ticket(ticket):
+    def validate_ticket(ticket):
         cached_user_id = redis_client.get_instance(ticket)
         if cached_user_id:
             valid_ticket = True
             user_id = cached_user_id
             err_msg = None
         else:
-            res_ticket = await ticket_sql(ticket)
+            res_ticket = ticket_sql.get_ticket(ticket)
             if not res_ticket:
                 valid_ticket = False
                 user_id = None
@@ -33,16 +33,16 @@ class TicketAuthorize:
         return {'valid_ticket': valid_ticket, 'user_id': user_id, 'err_msg': err_msg}
 
     @staticmethod
-    async def create_ticket(user_id):
+    def create_ticket(user_id):
         now = datetime.datetime.now()
         expired_time = datetime.datetime.now() + datetime.timedelta(days=1)
         ticket = token_hex(32)
-        await ticket_sql.create_ticket(user_id=user_id, ticket=ticket, create_time=str(now), expired_time=str(expired_time))
+        ticket_sql.create_ticket(user_id=user_id, ticket=ticket, create_time=str(now), expired_time=str(expired_time))
         redis_client.set_instance(ticket, user_id)
         return {'ticket': ticket}
 
     @staticmethod
-    async def delete_ticket(ticket):
+    def delete_ticket(ticket):
         redis_client.delete(ticket)
-        await ticket_sql.delete_ticket(ticket)
+        ticket_sql.delete_ticket(ticket)
         return

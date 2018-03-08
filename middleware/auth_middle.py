@@ -4,7 +4,7 @@ from django.utils.deprecation import MiddlewareMixin
 from django.http.response import HttpResponse
 from authentication.models import User
 from authentication.serializers import UserSerializer
-from redis.redis_server import redis_client
+from redis_tool.redis_server import redis_client
 from CpBackend.settings import ignore_auth_urls
 from ticket.functions import TicketAuthorize
 import logging
