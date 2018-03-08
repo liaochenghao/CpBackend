@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'authentication',
     'ticket',
@@ -36,6 +37,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'middleware.auth_middle.AuthMiddleware',
 ]
 
@@ -65,9 +68,6 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'utils.renderers.CustomJsonRender',
         'rest_framework.renderers.BrowsableAPIRenderer',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'utils.Auth.SessionCsrfExemptAuthentication',
     ),
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'EXCEPTION_HANDLER': 'utils.handlers.exception_handler'
@@ -125,7 +125,7 @@ LOGGING = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'alone_test_sys',
+        'NAME': 'cp_backend',
         'USER': 'root',
         'PASSWORD': '1q2w3e4r!Q',
         'HOST': '42.51.8.152',
