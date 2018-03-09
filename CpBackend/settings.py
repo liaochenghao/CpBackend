@@ -186,4 +186,4 @@ REDIS_CONFIG = {
     'port': 6379
 }
 
-ignore_auth_urls = ['/api/v1/register/']
+ignore_auth_urls = ['/api/v1/user/']

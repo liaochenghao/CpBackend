@@ -1,8 +1,9 @@
 # Create your views here.
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework import mixins, viewsets
+from authentication.models import User
+from authentication.serializers import UserSerializer
 
 
-class TestView(APIView):
-    def get(self, request):
-        return Response("Success")
+class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

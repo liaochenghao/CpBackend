@@ -33,7 +33,7 @@ class AuthMiddleware(MiddlewareMixin):
                                 content_type='application/json')
         if not redis_client.get_instance(key=auth_res['user_id']):
             logger.info('Get User Info From DataBase')
-            user = User.objects.get(open_id=auth_res['user_id'])
+            user = User.objects.filter(id=auth_res['user_id'])
             serializer = UserSerializer(user)
             user_info = serializer.data
             redis_client.set_instance(auth_res['user_id'], serializer.data)
