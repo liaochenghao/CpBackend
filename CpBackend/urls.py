@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^api/v1/', include('authentication.urls')),
     url(r'^api/v1/', include('activity.urls')),
     url(r'^api/v1/', include('register.urls')),
+    url(r'^api/v1/', include('invitation.urls')),
 ]

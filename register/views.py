@@ -1,7 +1,11 @@
+from rest_framework.response import Response
 from rest_framework import mixins, viewsets
 import uuid
-from register.models import RegisterInfo, Register
-from register.serializer import RegisterInfoSerializer, RegisterSerializer
+
+from rest_framework.decorators import list_route
+
+from register.models import RegisterInfo, Register, NewCornRecord
+from register.serializer import RegisterInfoSerializer, RegisterSerializer, NewCornRecordSerializer
 
 
 class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
@@ -39,3 +43,22 @@ class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
         if user_id:
             queryset = queryset.filter(user_id=user_id)
         return queryset
+
+
+class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin):
+    queryset = NewCornRecord.objects.all()
+    serializer_class = NewCornRecordSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+        return queryset
+
+    @list_route(methods=['get'])
+    def statistic(self, request):
+        params = request.query_params
+        record = NewCornRecord.objects.filter(user_id=params.get('user_id')).latest('create_at')
+        serializer = NewCornRecordSerializer(record)
+        return Response(serializer.data)

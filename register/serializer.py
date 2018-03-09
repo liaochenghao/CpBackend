@@ -1,6 +1,6 @@
 # coding: utf-8
 from rest_framework import serializers
-from register.models import RegisterInfo, Register
+from register.models import RegisterInfo, Register, NewCornRecord
 import uuid
 
 
@@ -25,3 +25,15 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['id'] = str(uuid.uuid4())
         return super().create(validated_data)
+
+
+class NewCornRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewCornRecord
+        fields = ['id', 'user', 'operation', 'corn', 'create_at']
+        read_only_fields = ['id']
+
+    def create(self, validated_data):
+        validated_data['id'] = str(uuid.uuid4())
+        return super().create(validated_data)
+

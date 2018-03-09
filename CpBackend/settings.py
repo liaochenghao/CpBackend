@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'authentication',
     'ticket',
     'register',
+    'invitation',
 ]
 
 MIDDLEWARE = [

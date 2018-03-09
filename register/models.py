@@ -41,3 +41,20 @@ class Register(models.Model):
 
     class Meta:
         db_table = "register"
+
+
+class NewCornRecord(models.Model):
+    OPTION_CHOICE = (
+        (0, '关注留学新青年'),
+        (1, '邀请用户成功'),
+        (2, '注册成功')
+    )
+    id = models.CharField('序列号', max_length=64, primary_key=True)
+    user = models.ForeignKey(User)
+    operation = models.IntegerField('操作类型', choices=OPTION_CHOICE)
+    corn = models.IntegerField('New币值')
+    balance = models.IntegerField('账户余额')
+    create_at = models.DateTimeField('记录时间', auto_now_add=True, null=True)
+
+    class Meta:
+        db_table = "new_corn_record"

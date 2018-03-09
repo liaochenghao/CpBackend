@@ -14,10 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from rest_framework import routers
-from register.views import RegisterInfoView, RegisterView, NewCornRecordView
+from invitation.views import InvitationView
 
 router = routers.SimpleRouter()
-router.register(r'register_info', RegisterInfoView)
-router.register(r'register', RegisterView)
-router.register(r'newcorn', NewCornRecordView)
+router.register(r'invitation', InvitationView)
 urlpatterns = router.urls
