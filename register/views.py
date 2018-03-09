@@ -1,7 +1,7 @@
 from rest_framework import mixins, viewsets
-
-from register.models import RegisterInfo
-from register.serializer import RegisterInfoSerializer
+import uuid
+from register.models import RegisterInfo, Register
+from register.serializer import RegisterInfoSerializer, RegisterSerializer
 
 
 class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
@@ -11,6 +11,11 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        super().create(request, *args, **kwargs)
+        Register.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
+                                activity_id=request.data.get('activity'))
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -23,3 +28,14 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         return queryset
 
 
+class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
+                   mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
+    queryset = Register.objects.all()
+    serializer_class = RegisterSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+        return queryset
