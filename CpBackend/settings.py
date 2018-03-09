@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'activity',
     'authentication',
     'ticket',
+    'register',
 ]
 
 MIDDLEWARE = [
@@ -40,7 +41,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'middleware.auth_middle.AuthMiddleware',
+    # 'middleware.auth_middle.AuthMiddleware',
 ]
 
 ROOT_URLCONF = 'CpBackend.urls'
@@ -184,4 +185,4 @@ REDIS_CONFIG = {
     'port': 6379
 }
 
-ignore_auth_urls = ['']
+ignore_auth_urls = ['/api/v1/register/']
