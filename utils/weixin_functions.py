@@ -27,7 +27,7 @@ class WxInterface:
             raise exceptions.ValidationError('connecting wechat server error')
         res = response.json()
         if res.get('openid') and res.get('session_key'):
-            user, created = User.objects.get_or_create(username=res['openid'])
+            user, created = User.objects.get_or_create(id=res['openid'])
             user.last_login = datetime.datetime.now()
             user.session_key = res['session_key']
             user.save()

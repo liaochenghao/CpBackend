@@ -1,11 +1,10 @@
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, exceptions
-import uuid
-
 from rest_framework.decorators import list_route
-
 from register.models import RegisterInfo, Register, NewCornRecord
 from register.serializer import RegisterInfoSerializer, RegisterSerializer, NewCornRecordSerializer
+from django.db import transaction
+import uuid
 
 
 class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
@@ -16,6 +15,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         # 将注册信息录入数据库
         super().create(request, *args, **kwargs)
