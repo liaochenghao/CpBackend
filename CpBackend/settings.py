@@ -130,8 +130,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cp_backend',
         'USER': 'root',
-        'PASSWORD': '1q2w3e4r!Q',
-        'HOST': '42.51.8.152',
+        'PASSWORD': 'svLE26eg',
+        'HOST': '47.92.115.126',
         'PORT': 3306,
         'CHARSET': 'UTF-8',
         'ATOMIC_REQUESTS': True,
@@ -176,8 +176,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 WX_SMART_CONFIG = {
-    'appid': 'wxc43e3a6113d24842',
-    'secret': 'ce91156d6faa2b40051c405446f0a65e'
+    'appid': 'wx8876efe53e30197f',
+    'secret': '4679e341aec53b79ba55ed7a7c26fe28'
 }
 micro_service_domain = 'http://42.51.8.152:7070'
 
