@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger('django')
 
 
-class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
+class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.CreateModelMixin):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -21,7 +21,6 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         code = request.query_params.get('code')
         if not code:
             raise exceptions.ValidationError('Param code is none')
-        logger.info('authorize')
         res = WxInterfaceUtil.code_authorize(code)
         logger.info('Authorize Response : %s' % res.__str__())
         response = Response(res)
