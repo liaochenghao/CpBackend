@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger('django')
 
 
-class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.CreateModelMixin):
+class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
