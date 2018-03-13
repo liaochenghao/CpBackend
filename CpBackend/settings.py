@@ -78,8 +78,7 @@ REST_FRAMEWORK = {
 
 WSGI_APPLICATION = 'CpBackend.wsgi.application'
 
-LOG_ROOT = os.path.join(BASE_DIR, '../../logs')
-
+LOG_ROOT = os.path.join(BASE_DIR, 'logs')
 if not os.path.isdir(LOG_ROOT):
     os.makedirs(LOG_ROOT)
 
