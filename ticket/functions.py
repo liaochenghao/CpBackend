@@ -39,7 +39,7 @@ class TicketAuthorize:
         ticket = token_hex(32)
         ticket_sql.create_ticket(user_id=user_id, ticket=ticket, create_time=str(now), expired_time=str(expired_time))
         redis_client.set_instance(ticket, user_id)
-        return {'ticket': ticket}
+        return ticket
 
     @staticmethod
     def delete_ticket(ticket):
