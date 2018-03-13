@@ -6,6 +6,9 @@ from rest_framework.response import Response
 from authentication.models import User
 from authentication.serializers import UserSerializer
 from utils.weixin_functions import WxInterfaceUtil
+import logging
+
+logger = logging.getLogger('django')
 
 
 class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
@@ -18,6 +21,7 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         code = request.query_params.get('code')
         if not code:
             raise exceptions.ValidationError('Param code is none')
+        logger.info('authorize')
         res = WxInterfaceUtil.code_authorize(code)
         response = Response(res)
         response.set_cookie('ticket', res['ticket'])
