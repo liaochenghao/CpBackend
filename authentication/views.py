@@ -23,6 +23,7 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
             raise exceptions.ValidationError('Param code is none')
         logger.info('authorize')
         res = WxInterfaceUtil.code_authorize(code)
+        logger.info('Authorize Response : %s' % res.__str__())
         response = Response(res)
         response.set_cookie('ticket', res['ticket'])
         return response
