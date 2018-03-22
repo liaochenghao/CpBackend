@@ -1,9 +1,12 @@
+import random
+
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, exceptions
 from rest_framework.decorators import list_route
 from register.models import RegisterInfo, Register, NewCornRecord
 from register.serializer import RegisterInfoSerializer, RegisterSerializer, NewCornRecordSerializer
 from django.db import transaction
+from invitation.models import Invitation
 import uuid
 
 
@@ -25,6 +28,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         # 给新用户添加New币
         NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
                                      operation=2, corn=20, balance=20)
+        return Response()
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -35,6 +39,17 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         if wechat:
             queryset = queryset.filter(wechat=wechat)
         return queryset
+
+    @list_route()
+    def random(self, request):
+        user_info = request.user_info
+        # 首先查询邀请数据表，找到已经邀请的用户的编号
+        id_list = Invitation.objects.filter(inviter=user_info['id']).values_list('invitee')
+        # 从注册信息表中随机获取不在已邀请的用户列表中的用户
+        total = RegisterInfo.objects.exclude(id__in=list(id_list)).count()
+        seed = random.randint(0, total - 1)
+        result = RegisterInfo.objects.exclude(id__in=id_list)[seed:seed + 1]
+        return Response(RegisterInfoSerializer(result[0]).data)
 
 
 class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
@@ -51,6 +66,11 @@ class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
 
     @list_route(methods=['get'])
     def check_register(self, request):
+        """
+        检查用户是否已参加活动
+        :param request: 
+        :return: 
+        """
         user_info = request.user_info
         activity_id = request.query_params.get('activity_id')
         if not activity_id:

@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'ticket',
     'register',
     'invitation',
+    'contract',
 ]
 
 MIDDLEWARE = [
@@ -95,29 +96,34 @@ LOGGING = {
         }
     },
     'handlers': {
-        'error': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': '%s/log.log' % LOG_ROOT,
             'formatter': 'simple'
         },
         'console': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'default',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['error', 'console'],
+            'handlers': ['file', 'console'],
             'level': 'INFO',
-            'propagate': True
+            'propagate': False
         },
-        'django.db.backends': {
-            'handlers': ['error', 'console'],
-            'propagate': True,
+        'django.request': {
+            'handlers': ['file', 'console'],
             'level': 'INFO',
+            'propagate': False
         },
+        'django.db': {
+            'handlers': ['file', 'console'],
+            'propagate': False,
+            'level': 'DEBUG',
+        }
     }
 }
 
@@ -186,4 +192,3 @@ REDIS_CONFIG = {
 }
 
 ignore_auth_urls = ['/api/v1/user/authorize/']
-

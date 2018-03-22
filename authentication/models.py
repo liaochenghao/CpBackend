@@ -16,7 +16,7 @@ class User(models.Model):
     country = models.CharField('国家', max_length=64, null=True)
     province = models.CharField('省份', max_length=64, null=True)
     session_key = models.CharField('微信session_key', max_length=255, null=True)  # 微信session key，对客户端不可见
-    create_time = models.DateTimeField('创建时间', auto_now_add=True)
+    create_time = models.DateTimeField('创建时间', auto_now_add=True, null=True)
     is_active = models.BooleanField('是否有效', default=True)
     last_login = models.DateTimeField('最后登录时间', null=True)
 

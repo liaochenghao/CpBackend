@@ -1,4 +1,5 @@
 # Create your views here.
+import datetime
 from rest_framework import mixins, viewsets, exceptions
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
@@ -26,3 +27,16 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         response = Response(res)
         response.set_cookie('ticket', res['ticket'])
         return response
+
+    def create(self, request, *args, **kwargs):
+        params = request.data
+        user = User.objects.filter(id=params['id']).first()
+        user.last_login = datetime.datetime.now()
+        user.head_img_url = params['head_img_url']
+        user.country = params['country']
+        user.province = params['province']
+        user.city = params['city']
+        user.nick_name = params['nick_name']
+        user.gender = params['gender']
+        user.save()
+        return Response(UserSerializer(user).data)
