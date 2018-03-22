@@ -10,6 +10,3 @@ class InvitationSerializer(serializers.ModelSerializer):
         fields = ['id', 'inviter', 'invitee', 'create_time', 'status']
         read_only_fields = ['id']
 
-    def create(self, validated_data):
-        validated_data['id'] = str(uuid.uuid4())
-        return super().create(validated_data)

@@ -1,8 +1,13 @@
+import uuid
+
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.response import Response
 
 from invitation.models import Invitation
 from invitation.serializer import InvitationSerializer
+import logging
+
+logger = logging.getLogger('django')
 
 
 class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
@@ -25,8 +30,17 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         user = request.user_info
         if not params.get('invitee'):
             raise serializers.ValidationError('参数 invitee 不能为空')
-        Invitation.objects.create(inviter=user.get('id'), invitee=params.get('invitee'), status=0)
+        _id = str(uuid.uuid4())
+        Invitation.objects.create(id=_id, inviter=user.get('id'), invitee=params.get('invitee'), status=0)
         return Response()
 
     def update(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        status = request.data.get('status')
+        if not status or status not in (0, 1, 2):
+            logger.info('InvitationView update (status=%s)' % status)
+            raise serializers.ValidationError('参数 invitee 有误')
+        invitation = Invitation.objects.get(id=pk)
+        invitation.status = status
+        invitation.save()
         return Response()

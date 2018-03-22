@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'ticket',
     'register',
     'invitation',
-    'contract',
 ]
 
 MIDDLEWARE = [

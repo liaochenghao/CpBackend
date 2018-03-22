@@ -8,6 +8,9 @@ from register.serializer import RegisterInfoSerializer, RegisterSerializer, NewC
 from django.db import transaction
 from invitation.models import Invitation
 import uuid
+import logging
+
+logger = logging.getLogger('django')
 
 
 class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
@@ -45,9 +48,11 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         user_info = request.user_info
         # 首先查询邀请数据表，找到已经邀请的用户的编号
         id_list = Invitation.objects.filter(inviter=user_info['id']).values_list('invitee')
+        logger.info('RegisterInfoView random id_list: %s' % id_list)
         # 从注册信息表中随机获取不在已邀请的用户列表中的用户
         total = RegisterInfo.objects.exclude(id__in=list(id_list)).count()
         seed = random.randint(0, total - 1)
+        logger.info('RegisterInfoView random seed: %s' % seed)
         result = RegisterInfo.objects.exclude(id__in=id_list)[seed:seed + 1]
         return Response(RegisterInfoSerializer(result[0]).data)
 
