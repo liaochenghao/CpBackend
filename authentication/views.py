@@ -1,6 +1,5 @@
 # Create your views here.
-import datetime
-from rest_framework import mixins, viewsets, exceptions
+from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 
@@ -21,22 +20,30 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         """客户端登录获取授权"""
         code = request.query_params.get('code')
         if not code:
-            raise exceptions.ValidationError('Param code is none')
+            raise serializers.ValidationError('Param code is none')
         res = WxInterfaceUtil.code_authorize(code)
-        logger.info('Authorize Response : %s' % res.__str__())
         response = Response(res)
         response.set_cookie('ticket', res['ticket'])
         return response
 
-    def create(self, request, *args, **kwargs):
+    @list_route(['POST'])
+    def check_account(self, request):
+        """
+        检查用户信息
+        :param request: 
+        :return: 
+        """
         params = request.data
-        user = User.objects.filter(id=params['id']).first()
-        user.last_login = datetime.datetime.now()
-        user.head_img_url = params['head_img_url']
-        user.country = params['country']
-        user.province = params['province']
-        user.city = params['city']
-        user.nick_name = params['nick_name']
-        user.gender = params['gender']
+        user = User.objects.filter(open_id=params.get('user_id'))
+        if not user:
+            logger.info('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
+            raise serializers.ValidationError('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
+        user.nick_name = params.get('nick_name')
+        user.gender = params.get('gender')
+        user.province = params.get('province')
+        user.country = params.get('country')
+        user.city = params.get('city')
+        user.avatar_url = params.get('avatar_url')
+        user.language = params.get('language')
         user.save()
-        return Response(UserSerializer(user).data)
+        return Response()

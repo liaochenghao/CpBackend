@@ -1,12 +1,14 @@
 # coding: utf-8
 import datetime
 import json
-
+import logging
 import requests
 from rest_framework import exceptions
 from CpBackend.settings import WX_SMART_CONFIG
 from authentication.models import User
 from ticket.functions import TicketAuthorize
+
+logger = logging.getLogger('django')
 
 
 class WxInterface:
@@ -24,6 +26,7 @@ class WxInterface:
         }
         response = requests.get(url=url, params=params)
         if response.status_code != 200:
+            logger.info('WxInterface code_authorize response:', response)
             raise exceptions.ValidationError('connecting wechat server error')
         res = response.json()
         if res.get('openid') and res.get('session_key'):
@@ -34,6 +37,7 @@ class WxInterface:
             ticket = TicketAuthorize.create_ticket(user.id)
             return {'user_id': user.id, 'ticket': ticket}
         else:
+            logger.info('WxInterface code_authorize response:', response)
             raise exceptions.ValidationError('wechat authorize error： %s' % json.dumps(res))
 
 
