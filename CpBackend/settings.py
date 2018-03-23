@@ -183,7 +183,7 @@ WX_SMART_CONFIG = {
     'appid': 'wx8876efe53e30197f',
     'secret': '4679e341aec53b79ba55ed7a7c26fe28'
 }
-micro_service_domain = 'http://42.51.8.152:7070'
+# micro_service_domain = 'http://42.51.8.152:7070'
 
 REDIS_CONFIG = {
     'host': '47.92.115.126',

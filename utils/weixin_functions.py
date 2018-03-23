@@ -26,18 +26,18 @@ class WxInterface:
         }
         response = requests.get(url=url, params=params)
         if response.status_code != 200:
-            logger.info('WxInterface code_authorize response:', response)
+            logger.info('WxInterface code_authorize response:', response.text)
             raise exceptions.ValidationError('connecting wechat server error')
         res = response.json()
         if res.get('openid') and res.get('session_key'):
-            user, created = User.objects.get_or_create(id=res['openid'])
+            user, created = User.objects.get_or_create(open_id=res['openid'])
             user.last_login = datetime.datetime.now()
             user.session_key = res['session_key']
             user.save()
             ticket = TicketAuthorize.create_ticket(user.id)
             return {'user_id': user.id, 'ticket': ticket}
         else:
-            logger.info('WxInterface code_authorize response:', response)
+            logger.info('WxInterface code_authorize response:', response.text)
             raise exceptions.ValidationError('wechat authorize error： %s' % json.dumps(res))
 
 
