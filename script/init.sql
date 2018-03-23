@@ -1,0 +1,1 @@
+INSERT INTO `cp_backend`.`activity` (`id`, `name`, `image_url`, `image_text`, `context`, `register_time`, `activity_time`) VALUES ('1', 'CP活动馆', 'media/images/1111.png', '一起谈场24小时就分手的恋爱', '王尔德说，这世界漂亮的脸蛋太多，有趣的灵魂却很少。而能遇见一个不聊过去、不谈身份、不在意物质能卸下假面的朋友……欢迎进入我们这次不走肾只走心的#谈场24小时就分手的恋爱#活动。', '2018年1月2日——1月10日', '2018年1月12日——1月19日');
