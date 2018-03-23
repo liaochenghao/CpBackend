@@ -34,7 +34,7 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         :return: 
         """
         params = request.data
-        user = User.objects.filter(open_id=params.get('user_id'))
+        user = User.objects.filter(open_id=params.get('user_id')).first()
         if not user:
             logger.info('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
             raise serializers.ValidationError('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
