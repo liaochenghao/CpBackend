@@ -29,4 +29,5 @@
 - [随机获取用户信息](docs/register/random_register_info.md)
 - [向用户发送邀请](docs/invitation/send_invitation.md)
 - [接收用户邀请](docs/invitation/accept_invitation.md)
+- [获取用户new币](docs/register/new_corn.md)
 
