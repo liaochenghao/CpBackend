@@ -31,7 +31,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         if not params.get('invitee'):
             raise serializers.ValidationError('参数 invitee 不能为空')
         _id = str(uuid.uuid4())
-        Invitation.objects.create(id=_id, inviter=user.get('id'), invitee=params.get('invitee'), status=0)
+        Invitation.objects.create(id=_id, inviter=user.get('open_id'), invitee=params.get('invitee'), status=0)
         return Response()
 
     def update(self, request, *args, **kwargs):
