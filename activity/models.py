@@ -9,6 +9,7 @@ class Activity(models.Model):
     context = models.TextField('活动内容描述')
     register_time = models.CharField('报名时间', max_length=64, null=True)
     activity_time = models.CharField('活动时间', max_length=64, null=True)
+    start_at = models.DateTimeField('活动开始时间', null=True)
 
     class Meta:
         db_table = "activity"
