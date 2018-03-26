@@ -8,5 +8,5 @@ class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitation
         fields = ['id', 'inviter', 'invitee', 'create_time', 'status']
-        read_only_fields = ['id']
+        read_only_fields = ['id','inviter',]
 
