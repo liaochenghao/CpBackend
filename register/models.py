@@ -58,7 +58,8 @@ class NewCornRecord(models.Model):
     OPTION_CHOICE = (
         (0, '关注留学新青年'),
         (1, '邀请用户成功'),
-        (2, '注册成功')
+        (2, '注册成功'),
+        (3, '每日登陆'),
     )
     id = models.CharField('序列号', max_length=64, primary_key=True)
     user = models.ForeignKey(User)
