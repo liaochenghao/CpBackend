@@ -1,11 +1,15 @@
 import uuid
 
 from rest_framework import mixins, viewsets, serializers
+from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
 from invitation.models import Invitation
 from invitation.serializer import InvitationSerializer
 import logging
+
+from register.models import RegisterInfo
+from register.serializer import RegisterInfoSerializer
 
 logger = logging.getLogger('django')
 
@@ -44,3 +48,14 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         invitation.status = status
         invitation.save()
         return Response()
+
+    @detail_route(methods=['get'])
+    def cp(self, request, pk):
+        result = Invitation.objects.filter(inviter=pk, status=1)
+        if not result:
+            raise serializers.ValidationError('该用户暂不存在CP')
+        invitee = result[0].invitee
+        data = RegisterInfo.objects.filter(open_id=invitee).first()
+        temp = RegisterInfoSerializer(data).data
+        temp['update_at'] = result[0].update_at
+        return Response(temp)

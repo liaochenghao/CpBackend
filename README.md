@@ -31,4 +31,5 @@
 - [接收用户邀请](docs/invitation/accept_invitation.md)
 - [查询用户邀请记录](docs/invitation/invitation_list.md)
 - [获取用户new币](docs/register/new_corn.md)
+- [获取用户CP信息](docs/invitation/cp.md)
 
