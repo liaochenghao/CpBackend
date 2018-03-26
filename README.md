@@ -27,4 +27,6 @@
 - [获取活动信息](docs/activity/activity.md)
 - [填写注册资料](docs/register/register_info.md)
 - [随机获取用户信息](docs/register/random_register_info.md)
+- [向用户发送邀请](docs/invitation/send_invitation.md)
+- [接收用户邀请](docs/invitation/accept_invitation.md)
 
