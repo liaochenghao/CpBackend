@@ -17,6 +17,7 @@ class User(models.Model):
     province = models.CharField('省份', max_length=64, null=True)
     language = models.CharField('语言', max_length=64, null=True)
     session_key = models.CharField('微信用户标示', max_length=64)
+    union_id = models.CharField('union_id', max_length=64, null=True)
     create_time = models.DateTimeField('创建时间', auto_now_add=True, null=True)
     last_login = models.DateTimeField('最后登录时间', null=True)
 

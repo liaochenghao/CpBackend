@@ -103,13 +103,6 @@ class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins
             queryset = queryset.filter(user_id=user_id)
         return queryset
 
-    @list_route(methods=['get'])
-    def statistic(self, request):
-        params = request.query_params
-        record = NewCornRecord.objects.filter(user_id=params.get('user_id')).latest('create_at')
-        serializer = NewCornRecordSerializer(record)
-        return Response(serializer.data)
-
     @detail_route(methods=['get'])
     def balance(self, request, pk):
         user_id = pk
@@ -120,3 +113,6 @@ class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins
             new_corn_record = new_corn_record.latest('create_at')
             balance = new_corn_record.balance
         return Response({'user_id': user_id, 'balance': balance})
+
+    def compute(self, request, pk):
+        pass
