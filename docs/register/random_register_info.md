@@ -2,7 +2,7 @@
 
 **请求地址**:
 ```
-    GET     api/v1/user_info/random
+    GET     api/v1/register_info/random/
 ```
 
 **请求参数**:
