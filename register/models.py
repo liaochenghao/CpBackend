@@ -67,6 +67,7 @@ class NewCornRecord(models.Model):
     corn = models.IntegerField('New币值')
     balance = models.IntegerField('账户余额')
     create_at = models.DateTimeField('记录时间', auto_now_add=True, null=True)
+    extra = models.CharField('备注说明', max_length=64, null=True)
 
     class Meta:
         db_table = "new_corn_record"
