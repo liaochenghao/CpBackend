@@ -29,7 +29,13 @@
             "hometown":"家乡",
             "future_city":"想就读的城市",
             "future_school":"想就读的学校",
-            "user":"用户编号",            
+            "user":"用户编号", 
+            "sex": 0                      性别（0-1）
+            "birthday": "1995-08-15"      出生日期
+            "constellation": "狮子座"     星座
+            "demand_area": "同城"         区域选择
+            "CP要求": 0                   0-比TA大  1-跟TA一样大 2-比TA小
+            "degree": "本科"              学位
     },
     "field_name": ""
 }
