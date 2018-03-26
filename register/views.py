@@ -9,6 +9,7 @@ from django.db import transaction
 from invitation.models import Invitation
 import uuid
 import logging
+from common.ComputeNewCorn import compute_new_corn
 
 logger = logging.getLogger('django')
 
@@ -29,8 +30,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         Register.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
                                 activity_id=request.data.get('activity'))
         # 给新用户添加New币
-        NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
-                                     operation=2, corn=20, balance=20)
+        compute_new_corn(request.data.get('user'), 2)
         return Response()
 
     def get_queryset(self):
