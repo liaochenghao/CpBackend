@@ -4,6 +4,8 @@ from activity.models import Activity
 from activity.serializers import ActivitySerializer
 from rest_framework import exceptions
 
+from register.models import Register
+
 
 class ActivityView(APIView):
     def get(self, request):
@@ -14,4 +16,7 @@ class ActivityView(APIView):
         if not activity:
             raise exceptions.ValidationError('Can not find activity information')
         serializer = ActivitySerializer(activity)
-        return Response(serializer.data)
+        result = serializer.data
+        user_count = Register.objects.filter(activity=1).count()
+        result['user_count'] = user_count
+        return Response(result)

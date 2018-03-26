@@ -6,4 +6,5 @@ from rest_framework import serializers
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        fields = ['id', 'name', 'image_url', 'image_text', 'context', 'register_time', 'activity_time', 'start_at']
+        fields = ['id', 'name', 'image_url', 'image_text', 'context', 'register_time', 'activity_time', 'start_at',
+                  'user_plan_count']
