@@ -34,7 +34,7 @@
             "birthday": "1995-08-15"      出生日期
             "constellation": "狮子座"     星座
             "demand_area": "同城"         区域选择
-            "CP要求": 0                   0-比TA大  1-跟TA一样大 2-比TA小
+            "demand_cp_age": 0                   0-比TA大  1-跟TA一样大 2-比TA小
             "degree": "本科"              学位
     },
     "field_name": ""
