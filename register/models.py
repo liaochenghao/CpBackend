@@ -16,8 +16,16 @@ class RegisterInfo(models.Model):
         (1, '留学生'),
         (2, '毕业生')
     )
+    CP_AGE = (
+        (0, '比TA大'),
+        (1, '跟TA一样'),
+        (2, '比TA小')
+    )
     id = models.CharField('序列号', max_length=64, primary_key=True)
     nickname = models.CharField('活动昵称', max_length=64)
+    sex = models.IntegerField('性别')
+    birthday = models.DateTimeField('生日')
+    constellation = models.CharField('星座', null=True, max_length=32)
     sexual_orientation = models.IntegerField('性取向', choices=SEX_CHOICE)
     overseas_study_status = models.IntegerField('留学状态', choices=OVERSEAS_STUDY_STATUS)
     wechat = models.CharField('微信号或手机号', max_length=32)
@@ -25,6 +33,9 @@ class RegisterInfo(models.Model):
     hometown = models.CharField('家乡', max_length=64)
     future_city = models.CharField('想就读的城市', max_length=64)
     future_school = models.CharField('想就读的学校', max_length=64)
+    demand_area = models.CharField('区域选择', max_length=32)
+    demand_cp_age = models.IntegerField('对CP的年龄要求', choices=CP_AGE)
+    degree = models.CharField('学位', max_length=32)
     user = models.ForeignKey(User)
     create_at = models.DateTimeField('注册时间', auto_now_add=True, null=True)
     update_at = models.DateTimeField('修改时间', auto_now=True, null=True)

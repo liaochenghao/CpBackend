@@ -2,7 +2,7 @@
 
 **请求地址**:
 ```
-    GET     api/v1/user_info/
+    POST     api/v1/register_info/
 ```
 
 **请求参数**:
