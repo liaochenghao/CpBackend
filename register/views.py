@@ -2,7 +2,7 @@ import random
 
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, exceptions
-from rest_framework.decorators import list_route
+from rest_framework.decorators import list_route, detail_route
 from register.models import RegisterInfo, Register, NewCornRecord
 from register.serializer import RegisterInfoSerializer, RegisterSerializer, NewCornRecordSerializer
 from django.db import transaction
@@ -101,3 +101,14 @@ class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins
         record = NewCornRecord.objects.filter(user_id=params.get('user_id')).latest('create_at')
         serializer = NewCornRecordSerializer(record)
         return Response(serializer.data)
+
+    @detail_route(methods=['get'])
+    def balance(self, request, pk):
+        user_id = pk
+        new_corn_record = NewCornRecord.objects.filter(user_id=user_id)
+        if not new_corn_record:
+            balance = 0
+        else:
+            new_corn_record = new_corn_record.latest('create_at')
+            balance = new_corn_record.balance
+        return Response({'user_id': user_id, 'balance': balance})
