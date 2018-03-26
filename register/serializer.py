@@ -8,7 +8,7 @@ class RegisterInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = RegisterInfo
         fields = ['id', 'nickname', 'sexual_orientation', 'overseas_study_status', 'wechat', 'phone_number', 'hometown',
-                  'future_city', 'future_school', 'user', 'create_at', 'update_at']
+                  'future_city', 'future_school', 'user', 'create_at', 'update_at', 'constellation']
         read_only_fields = ['id']
 
     def create(self, validated_data):
