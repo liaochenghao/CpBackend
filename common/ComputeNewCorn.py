@@ -58,7 +58,7 @@ class NewCornCompute:
                                                  balance=1 + balance, corn=1,
                                                  extra='每日登陆')
         else:
-            record = NewCornRecord.objects.filter(id=str(uuid.uuid4()), user_id=user_id).first()
+            record = NewCornRecord.objects.filter(user_id=user_id).first()
             balance = record.balance
             corn = 0
             extra = None

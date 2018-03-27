@@ -3,6 +3,8 @@ import random
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, exceptions
 from rest_framework.decorators import list_route, detail_route
+
+from authentication.models import User
 from register.models import RegisterInfo, Register, NewCornRecord
 from register.serializer import RegisterInfoSerializer, RegisterSerializer, NewCornRecordSerializer
 from django.db import transaction
@@ -55,6 +57,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         logger.info('RegisterInfoView random seed: %s' % seed)
         result = RegisterInfo.objects.exclude(user_id__in=id_list)[seed:seed + 1]
         NewCornCompute.compute_new_corn(user_info.get('open_id'), 6)
+        # User.objects.filter(open_id=result.user_id)
         return Response(RegisterInfoSerializer(result[0]).data)
 
 
