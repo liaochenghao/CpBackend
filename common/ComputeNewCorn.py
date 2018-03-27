@@ -22,6 +22,7 @@ OPTION_CHOICE = (
 class NewCornCompute:
     @staticmethod
     def compute_new_corn(user_id, operation):
+        logger.info('compute_new_corn user_id=%s, operation=%s' %(user_id, operation))
         # 新关注公众号与注册成功的new币计算规则一致，都是要判断用户是否是首次，且不允许重复
         if operation == 0 or operation == 2:
             record = NewCornRecord.objects.filter(user_id=user_id)
@@ -40,7 +41,7 @@ class NewCornCompute:
                                                  corn=corn,
                                                  extra=extra)
         # 每日登陆的逻辑处理
-        if operation == 3:
+        elif operation == 3:
             start_date = datetime.datetime.now()
             record = NewCornRecord.objects.filter(user_id=user_id, operation=operation,
                                                   create_at__day=start_date.day, create_at__month=start_date.month)
