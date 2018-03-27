@@ -1,9 +1,10 @@
 import uuid
 
+from django.db import transaction
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
-
+from common.ComputeNewCorn import compute_new_corn
 from invitation.models import Invitation
 from invitation.serializer import InvitationSerializer
 import logging
@@ -29,6 +30,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             queryset = queryset.filter(invitee=invitee)
         return queryset
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         params = request.data
         user = request.user_info
@@ -36,10 +38,13 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             raise serializers.ValidationError('参数 invitee 不能为空')
         _id = str(uuid.uuid4())
         Invitation.objects.create(id=_id, inviter=user.get('open_id'), invitee=params.get('invitee'), status=0)
+        compute_new_corn(user.get('open_id'), 1)
         return Response()
 
+    @transaction.atomic
     def update(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
+        user = request.user_info
         status = request.data.get('status')
         if not status or status not in (0, 1, 2):
             logger.info('InvitationView update (status=%s)' % status)
@@ -47,6 +52,8 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         invitation = Invitation.objects.get(id=pk)
         invitation.status = status
         invitation.save()
+        if status == 1:
+            compute_new_corn(user.get('open_id'), 5)
         return Response()
 
     @detail_route(methods=['get'])

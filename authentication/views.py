@@ -1,8 +1,9 @@
 # Create your views here.
+from django.db import transaction
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-
+from common.ComputeNewCorn import compute_new_corn
 from authentication.models import User
 from authentication.serializers import UserSerializer
 from utils.weixin_functions import WxInterfaceUtil
@@ -26,6 +27,7 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         response.set_cookie('ticket', res['ticket'])
         return response
 
+    @transaction.atomic
     @list_route(['POST'])
     def check_account(self, request):
         """
@@ -49,4 +51,5 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
             user.avatar_url = params.get('avatar_url')
             user.language = params.get('language')
             user.save()
+        compute_new_corn(user.open_id, 3)
         return Response()

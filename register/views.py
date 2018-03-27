@@ -54,6 +54,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         seed = random.randint(0, total - 1)
         logger.info('RegisterInfoView random seed: %s' % seed)
         result = RegisterInfo.objects.exclude(user_id__in=id_list)[seed:seed + 1]
+        compute_new_corn(user_info.get('open_id'), 6)
         return Response(RegisterInfoSerializer(result[0]).data)
 
 
@@ -83,13 +84,14 @@ class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
         result = Register.objects.filter(user_id=user_info.get('user_id'), activity_id=activity_id)
         return Response(True if result else False)
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
+        user_info = request.user_info
         # 报名指定的活动
         Register.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
                                 activity_id=request.data.get('activity'))
         # 给新用户添加New币
-        NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
-                                     operation=2, corn=20, balance=20)
+        compute_new_corn(user_info.get('open_id'), 6)
 
 
 class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin):
