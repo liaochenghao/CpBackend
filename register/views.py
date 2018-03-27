@@ -9,7 +9,7 @@ from django.db import transaction
 from invitation.models import Invitation
 import uuid
 import logging
-from common.ComputeNewCorn import compute_new_corn
+from common.ComputeNewCorn import NewCornCompute
 
 logger = logging.getLogger('django')
 
@@ -30,7 +30,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         Register.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
                                 activity_id=request.data.get('activity'))
         # 给新用户添加New币
-        compute_new_corn(request.data.get('user'), 2)
+        NewCornCompute.compute_new_corn(request.data.get('user'), 2)
         return Response()
 
     def get_queryset(self):
@@ -54,7 +54,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         seed = random.randint(0, total - 1)
         logger.info('RegisterInfoView random seed: %s' % seed)
         result = RegisterInfo.objects.exclude(user_id__in=id_list)[seed:seed + 1]
-        compute_new_corn(user_info.get('open_id'), 6)
+        NewCornCompute.compute_new_corn(user_info.get('open_id'), 6)
         return Response(RegisterInfoSerializer(result[0]).data)
 
 
@@ -91,7 +91,7 @@ class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
         Register.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
                                 activity_id=request.data.get('activity'))
         # 给新用户添加New币
-        compute_new_corn(user_info.get('open_id'), 6)
+        NewCornCompute.compute_new_corn(user_info.get('open_id'), 6)
 
 
 class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin):

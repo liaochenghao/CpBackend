@@ -4,7 +4,7 @@ from django.db import transaction
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
-from common.ComputeNewCorn import compute_new_corn
+from common.ComputeNewCorn import NewCornCompute
 from invitation.models import Invitation
 from invitation.serializer import InvitationSerializer
 import logging
@@ -38,7 +38,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             raise serializers.ValidationError('参数 invitee 不能为空')
         _id = str(uuid.uuid4())
         Invitation.objects.create(id=_id, inviter=user.get('open_id'), invitee=params.get('invitee'), status=0)
-        compute_new_corn(user.get('open_id'), 1)
+        NewCornCompute.compute_new_corn(user.get('open_id'), 1)
         return Response()
 
     @transaction.atomic
@@ -53,7 +53,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         invitation.status = status
         invitation.save()
         if status == 1:
-            compute_new_corn(user.get('open_id'), 5)
+            NewCornCompute.compute_new_corn(user.get('open_id'), 5)
         return Response()
 
     @detail_route(methods=['get'])

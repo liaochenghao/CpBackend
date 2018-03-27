@@ -3,7 +3,7 @@ from django.db import transaction
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from common.ComputeNewCorn import compute_new_corn
+from common.ComputeNewCorn import NewCornCompute
 from authentication.models import User
 from authentication.serializers import UserSerializer
 from utils.weixin_functions import WxInterfaceUtil
@@ -27,8 +27,8 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         response.set_cookie('ticket', res['ticket'])
         return response
 
-    @transaction.atomic
     @list_route(['POST'])
+    @transaction.atomic
     def check_account(self, request):
         """
         检查用户信息
@@ -36,20 +36,21 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         :return: 
         """
         params = request.data
-        user = User.objects.filter(open_id=params.get('user_id')).first()
-        if not user:
+        user_info = User.objects.filter(open_id=params.get('user_id')).first()
+        data = UserSerializer(user_info)
+        if not data.data:
             logger.info('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
             raise serializers.ValidationError('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
+        NewCornCompute.compute_new_corn(user_info.open_id, 3)
         # 录入用户信息到数据库，同时也要注意微信用户可能会更换信息
-        if user.nick_name != params.get('nick_name') or user.avatar_url != params.get('avatar_url'):
+        if user_info.nick_name != params.get('nick_name') or user_info.avatar_url != params.get('avatar_url'):
             logger.info('check_account更新用户信息: user_id=%s' % params.get('user_id'))
-            user.nick_name = params.get('nick_name')
-            user.gender = params.get('gender')
-            user.province = params.get('province')
-            user.country = params.get('country')
-            user.city = params.get('city')
-            user.avatar_url = params.get('avatar_url')
-            user.language = params.get('language')
-            user.save()
-        compute_new_corn(user.open_id, 3)
+            user_info.nick_name = params.get('nick_name')
+            user_info.gender = params.get('gender')
+            user_info.province = params.get('province')
+            user_info.country = params.get('country')
+            user_info.city = params.get('city')
+            user_info.avatar_url = params.get('avatar_url')
+            user_info.language = params.get('language')
+            user_info.save()
         return Response()
