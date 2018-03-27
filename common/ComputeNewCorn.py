@@ -38,6 +38,7 @@ def compute_new_corn(user_id, operation):
         now_time = datetime.datetime.now()
         record = NewCornRecord.objects.filter(user=user_id, operation=operation, create_at__day=now_time.day)
         if not record:
+            record = NewCornRecord.objects.filter(user=user_id)
             balance = record[0].balance
             # 查询最新记录添加记录
             NewCornRecord.objects.create(user=user_id, operation=operation, balance=1 + balance, corn=1, extra='每日登陆')
