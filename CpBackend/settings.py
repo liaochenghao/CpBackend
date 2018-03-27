@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'ticket',
     'register',
     'invitation',
+    'task',
 ]
 
 MIDDLEWARE = [
