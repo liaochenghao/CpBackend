@@ -50,7 +50,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         user_info = request.user_info
         # 首先查询邀请数据表，找到已经邀请的用户的编号
         id_list = Invitation.objects.filter(inviter=user_info['open_id']).values_list('invitee')
-        logger.info('RegisterInfoView random id_list: %s' % id_list)
+        logger.info('RegisterInfoView random id_list: %s' % list(id_list))
         # 从注册信息表中随机获取不在已邀请的用户列表中的用户
         total = RegisterInfo.objects.exclude(user_id__in=list(id_list)).count()
         seed = random.randint(0, total - 1)
