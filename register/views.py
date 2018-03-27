@@ -53,9 +53,13 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         logger.info('RegisterInfoView random id_list: %s' % list(id_list))
         # 从注册信息表中随机获取不在已邀请的用户列表中的用户
         total = RegisterInfo.objects.exclude(user_id__in=list(id_list)).count()
+        if total == 0:
+            raise exceptions.ValidationError('暂无匹配用户信息')
+        logger.info('RegisterInfoView total = %s' % total)
         seed = random.randint(0, total - 1)
         logger.info('RegisterInfoView random seed: %s' % seed)
         result = RegisterInfo.objects.exclude(user_id__in=id_list)[seed:seed + 1]
+        logger.info('333333333333', result)
         if not result:
             raise exceptions.ValidationError('暂无匹配用户信息')
         user = User.objects.filter(open_id=result.user_id).first()
