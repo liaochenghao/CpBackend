@@ -74,3 +74,4 @@ class NewCornRecord(models.Model):
 
     class Meta:
         db_table = "new_corn_record"
+        ordering = ['-create_at']

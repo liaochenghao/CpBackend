@@ -1,8 +1,12 @@
 # coding: utf-8
 import datetime
 
-from register.models import NewCornRecord
+from rest_framework import exceptions
 
+from register.models import NewCornRecord
+import logging
+
+logger = logging.getLogger('django')
 OPTION_CHOICE = (
     (0, '关注留学新青年'),
     (1, '邀请用户'),
@@ -15,29 +19,56 @@ OPTION_CHOICE = (
 
 
 def compute_new_corn(user_id, operation):
-    # 如果是关注公众号或者注册信息，则需要判断数据库中是否存在记录
+    # 新关注公众号与注册成功的new币计算规则一致，都是要判断用户是否是首次，且不允许重复
     if operation == 0 or operation == 2:
         record = NewCornRecord.objects.filter(open_id=user_id)
         corn = 3 if operation == 0 else 20
+        extra = '关注留学新青年' if operation == 0 else '注册成功'
         if not record:
-            NewCornRecord.objects.create(user=user_id, operation=operation, balance=corn, corn=corn)
+            NewCornRecord.objects.create(user=user_id, operation=operation, balance=corn, corn=corn, extra=extra)
         else:
-            balance = record[0].balance
-            NewCornRecord.objects.create(user=user_id, operation=operation, balance=corn + balance, corn=corn)
+            temp = NewCornRecord.objects.filter(open_id=user_id, operation=operation)
+            # 判断是否是首次关注
+            if not temp:
+                balance = record[0].balance
+                NewCornRecord.objects.create(user=user_id, operation=operation, balance=corn + balance, corn=corn,
+                                             extra=extra)
+    # 每日登陆的逻辑处理
     if operation == 3:
         now_time = datetime.datetime.now()
         record = NewCornRecord.objects.filter(open_id=user_id, operation=operation, create_at__day=now_time.day)
         if not record:
             balance = record[0].balance
             # 查询最新记录添加记录
-            NewCornRecord.objects.create(user=user_id, operation=operation, balance=1 + balance, corn=1)
-    if operation == 0 or operation == 1:
-        add, corn = True, 2
-    elif operation == 2:
-        add, corn = True, 3
-    if not record:
-        NewCornRecord.objects.create(user=user_id, operation=operation, balance=corn)
+            NewCornRecord.objects.create(user=user_id, operation=operation, balance=1 + balance, corn=1, extra='每日登陆')
     else:
+        record = NewCornRecord.objects.filter(open_id=user_id).first()
         balance = record.balance
-        balance = balance + corn if add else balance - corn
-        NewCornRecord.objects.create(user=user_id, operation=operation, balance=balance, corn=corn)
+        corn = 0
+        extra = None
+        if operation == 1:
+            corn = 3
+            if balance < corn:
+                logger.info('compute_new_corn operation=%s,balance=%s' % (str(operation), str(balance)))
+                raise exceptions.ValidationError('账户余额不足')
+            balance -= corn
+            extra = '邀请用户'
+        elif operation == 4:
+            corn = 3
+            balance += corn
+            extra = '活动报名'
+        elif operation == 5:
+            corn = 2
+            if balance < corn:
+                logger.info('compute_new_corn operation=%s,balance=%s' % (str(operation), str(balance)))
+                raise exceptions.ValidationError('账户余额不足')
+            balance -= corn
+            extra = '接受用户邀请'
+        elif operation == 6:
+            corn = 1
+            if balance < corn:
+                logger.info('compute_new_corn operation=%s,balance=%s' % (str(operation), str(balance)))
+                raise exceptions.ValidationError('账户余额不足')
+            balance -= corn
+            extra = '切换用户'
+        NewCornRecord.objects.create(user=user_id, operation=operation, balance=balance, corn=corn, extra=extra)
