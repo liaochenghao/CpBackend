@@ -56,9 +56,11 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         seed = random.randint(0, total - 1)
         logger.info('RegisterInfoView random seed: %s' % seed)
         result = RegisterInfo.objects.exclude(user_id__in=id_list)[seed:seed + 1]
+        user = User.objects.filter(open_id=result.user_id).first()
         NewCornCompute.compute_new_corn(user_info.get('open_id'), 6)
-        # User.objects.filter(open_id=result.user_id)
-        return Response(RegisterInfoSerializer(result[0]).data)
+        data = RegisterInfoSerializer(result[0]).data
+        data['avatar_url'] = user.avatar_url
+        return Response(data)
 
 
 class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
