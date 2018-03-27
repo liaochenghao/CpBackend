@@ -21,7 +21,7 @@ class TicketAuthorize:
                 err_msg = 'ticket不存在'
             else:
                 ticket = res_ticket
-                if ticket['expired_time'] > datetime.datetime.now():
+                if datetime.datetime.strptime(ticket['expired_time'], '%Y-%m-%dT%H:%M:%SZ') > datetime.datetime.now():
                     valid_ticket = True
                     user_id = ticket['user']['id']
                     err_msg = None
