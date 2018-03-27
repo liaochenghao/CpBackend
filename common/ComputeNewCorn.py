@@ -40,7 +40,7 @@ def compute_new_corn(user_id, operation):
         if not record:
             record = NewCornRecord.objects.filter(user=user_id)
             if not record:
-                NewCornRecord.objects.create(user=user_id, operation=operation, balance=1 + balance, corn=1,
+                NewCornRecord.objects.create(user=user_id, operation=operation, balance=1, corn=1,
                                              extra='每日登陆')
             else:
                 balance = record[0].balance
