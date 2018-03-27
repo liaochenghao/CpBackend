@@ -19,10 +19,12 @@ class AuthMiddleware(MiddlewareMixin):
         if url_path in ignore_auth_urls:
             return
         logger.info('Auth Url: %s' % url_path)
-        ticket = request.COOKIES.get('ticket')
-        if not ticket:
-            data = request.GET.dict()
-            ticket = data.get('ticket')
+        # ticket = request.COOKIES.get('ticket')
+        # if not ticket:
+        #     data = request.GET.dict()
+        #     ticket = data.get('ticket')
+        data = request.GET.dict()
+        ticket = data.get('ticket')
         if not ticket:
             return HttpResponse(content=json.dumps(dict(code=401, msg='未登录')),
                                 content_type='application/json')
