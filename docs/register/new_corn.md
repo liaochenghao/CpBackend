@@ -2,7 +2,7 @@
 
 **请求地址**:
 ```
-    GET     api/v1/newcorn/{user_id}
+    GET     api/v1/newcorn/{user_id}/balance
 ```
 
 **请求参数**:

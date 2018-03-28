@@ -124,7 +124,7 @@ class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins
             balance = 0
         else:
             new_corn_record = new_corn_record.latest('create_at')
-            balance = new_corn_record.balance
+            balance = new_corn_record[0].balance
         return Response({'user_id': user_id, 'balance': balance})
 
     @detail_route(methods=['post'])
