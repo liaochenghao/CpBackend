@@ -38,8 +38,6 @@ class WxInterface:
                 # 如果用户不存在，则向数据库插入数据
                 user = User.objects.create(open_id=res['openid'], last_login=datetime.datetime.now(),
                                            session_key=res['session_key'])
-                # 同时给用户分配new corn 20
-                NewCornRecord.objects.create(user=user, operation=2, corn=20, balance=20)
             else:
                 user.last_login = datetime.datetime.now()
                 user.save()
