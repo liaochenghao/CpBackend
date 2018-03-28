@@ -65,7 +65,7 @@ class NewCornRecord(models.Model):
         (6, '切换用户')
     )
     id = models.CharField('序列号', max_length=64, primary_key=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, db_index=True)
     operation = models.IntegerField('操作类型', choices=OPTION_CHOICE)
     corn = models.IntegerField('New币值')
     balance = models.IntegerField('账户余额')
