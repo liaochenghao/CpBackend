@@ -40,6 +40,7 @@ class WxInterface:
                                            session_key=res['session_key'])
             else:
                 user.last_login = datetime.datetime.now()
+                logger.info('================================================')
                 user.save()
             ticket = TicketAuthorize.create_ticket(res['openid'])
             return {'user_id': user.open_id, 'ticket': ticket}
