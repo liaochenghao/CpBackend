@@ -15,7 +15,7 @@ class RegisterInfoSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['id'] = str(uuid.uuid4())
         print('===================================')
-        print(validated_data.__dict__)
+        print(validated_data)
         print('===================================')
         return super().create(validated_data)
 
