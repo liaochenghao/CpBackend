@@ -81,6 +81,12 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
             data['sexual_orientation'] = '同性'
         elif data['sexual_orientation'] == 1:
             data['sexual_orientation'] = '双性'
+        if data['overseas_study_status'] == 0:
+            data['overseas_study_status'] = '准留学生'
+        elif data['overseas_study_status'] == 1:
+            data['overseas_study_status'] = '留学生'
+        elif data['overseas_study_status'] == 2:
+            data['overseas_study_status'] = '毕业生'
         return Response(data)
 
 
