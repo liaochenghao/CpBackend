@@ -1,6 +1,7 @@
 # coding: utf-8
 import uuid
 
+import datetime
 from rest_framework import serializers
 from invitation.models import Invitation
 
@@ -14,6 +15,7 @@ class InvitationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['id'] = str(uuid.uuid4())
         validated_data['inviter'] = self.context.get('request').user_info.get('open_id')
-        validated_data['expire_at'] = validated_data['create_time']
+        validated_data['create_time'] = datetime.datetime.now()
+        validated_data['expire_at'] = validated_data['create_time'] + datetime.timedelta(days=3)
         validated_data['status'] = 0
         return super().create(validated_data)

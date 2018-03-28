@@ -13,7 +13,7 @@ class Invitation(models.Model):
     invitee = models.CharField('被邀请人', max_length=64)
     status = models.IntegerField('状态', choices=STATUS)
     expire_at = models.DateTimeField('过期时间', null=True)
-    create_time = models.DateTimeField('邀请时间', auto_now_add=True, null=True)
+    create_time = models.DateTimeField('邀请时间', null=True)
     update_at = models.DateTimeField('更新时间', auto_now=True, null=True)
 
     class Meta:
