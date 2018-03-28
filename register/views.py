@@ -89,6 +89,9 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
             data['overseas_study_status'] = '毕业生'
         return Response(data)
 
+    def update(self, request, *args, **kwargs):
+        super().update(request, *args, **kwargs)
+
 
 class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
                    mixins.RetrieveModelMixin, mixins.UpdateModelMixin):

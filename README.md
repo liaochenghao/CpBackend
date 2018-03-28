@@ -26,6 +26,7 @@
 - [检查账户](docs/auth/check_account.md)
 - [获取活动信息](docs/activity/activity.md)
 - [填写注册资料](docs/register/register_info.md)
+- [修改注册资料](docs/register/update_register_info.md)
 - [检查用户是否报名活动](docs/register/check_register.md)
 - [随机获取用户信息](docs/register/random_register_info.md)
 - [向用户发送邀请](docs/invitation/send_invitation.md)
