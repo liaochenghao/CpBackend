@@ -67,6 +67,9 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
             raise exceptions.ValidationError('暂无匹配用户信息')
         logger.info('随机获取到的用户ID= %s' % result[0].user_id)
         user = User.objects.filter(open_id=result[0].user_id).first()
+        logger.info('-------------------------------------------------------------')
+        logger.info(request.query_params.get('auto'))
+        logger.info('-------------------------------------------------------------')
         if request.query_params.get('auto'):
             NewCornCompute.compute_new_corn(user_info.get('open_id'), 6)
         data = RegisterInfoSerializer(result[0]).data
