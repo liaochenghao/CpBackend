@@ -40,10 +40,13 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         queryset = super().get_queryset()
         nickname = self.request.query_params.get('nickname')
         wechat = self.request.query_params.get('wechat')
+        user_id = self.request.query_params.get('user_id')
         if nickname:
             queryset = queryset.filter(nickname=nickname)
         if wechat:
             queryset = queryset.filter(wechat=wechat)
+        if user_id:
+            queryset =queryset.filter(user_id=user_id)
         return queryset
 
     @list_route()
