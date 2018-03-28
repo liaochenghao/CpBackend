@@ -38,7 +38,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             raise serializers.ValidationError('参数 invitee 不能为空')
         super().create(request, *args, **kwargs)
         logger.info('+++++++++++++++++++ %s' % params.get('auto'))
-        if params.get('auto'):
+        if params.get('auto') is True:
             NewCornCompute.compute_new_corn(user.get('open_id'), 1)
         return Response()
 
