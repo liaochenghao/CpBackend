@@ -1,5 +1,6 @@
 import random
 
+import datetime
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, exceptions
 from rest_framework.decorators import list_route, detail_route
@@ -66,6 +67,20 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         NewCornCompute.compute_new_corn(user_info.get('open_id'), 6)
         data = RegisterInfoSerializer(result[0]).data
         data['avatar_url'] = user.avatar_url
+        data['age'] = datetime.datetime.now().year - int(data['birthday'][:4])
+        data['sex'] = '男' if data['sex'] == 1 else '女'
+        if data['demand_cp_age'] == 0:
+            data['demand_cp_age'] = '比TA大'
+        elif data['demand_cp_age'] == 1:
+            data['demand_cp_age'] = '跟TA一样'
+        elif data['demand_cp_age'] == 2:
+            data['demand_cp_age'] = '比TA小'
+        if data['sexual_orientation'] == 0:
+            data['sexual_orientation'] = '异性'
+        elif data['sexual_orientation'] == 1:
+            data['sexual_orientation'] = '同性'
+        elif data['sexual_orientation'] == 1:
+            data['sexual_orientation'] = '双性'
         return Response(data)
 
 
