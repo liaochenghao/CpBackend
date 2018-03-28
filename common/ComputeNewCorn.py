@@ -28,18 +28,9 @@ class NewCornCompute:
             record = NewCornRecord.objects.filter(user_id=user_id)
             corn = 3 if operation == 0 else 20
             extra = '关注留学新青年' if operation == 0 else '注册成功'
-            logger.info('-----------------------------hhhh----------------------------------')
-            logger.info(corn, extra)
-            logger.info('-----------------------------hhhh----------------------------------')
             if not record:
-                logger.info('--------------------------kkkk-------------------------------------')
-                logger.info(corn, extra)
-                logger.info('--------------------------kkkk-------------------------------------')
                 NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=user_id, operation=operation, balance=corn,
                                              corn=corn, extra=extra)
-                logger.info('--------------------------jjjj-------------------------------------')
-                logger.info(corn, extra)
-                logger.info('--------------------------jjjj-------------------------------------')
             else:
                 temp = NewCornRecord.objects.filter(user_id=user_id, operation=operation)
                 # 判断是否是首次关注
