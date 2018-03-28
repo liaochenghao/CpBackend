@@ -29,6 +29,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
     def create(self, request, *args, **kwargs):
         # 将注册信息录入数据库
         request.data['id'] = str(uuid.uuid4())
+        request.data['user'] = request.user_info.get('open_id')
         super().create(request, *args, **kwargs)
         # 报名指定的活动
         Register.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
@@ -47,7 +48,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         if wechat:
             queryset = queryset.filter(wechat=wechat)
         if user_id:
-            queryset =queryset.filter(user_id=user_id)
+            queryset = queryset.filter(user_id=user_id)
         return queryset
 
     @list_route()
@@ -95,7 +96,25 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         return Response(data)
 
     def update(self, request, *args, **kwargs):
-        super().update(request, *args, **kwargs)
+        result = RegisterInfo.objects.get(id=kwargs.get('pk'))
+        params = request.data
+        if params.get('nickname'):
+            result.nickname = params.get('nickname')
+        if params.get('sexual_orientation'):
+            result.sexual_orientation = params.get('sexual_orientation')
+        if params.get('overseas_study_status'):
+            result.overseas_study_status = params.get('overseas_study_status')
+        if params.get('wechat'):
+            result.wechat = params.get('wechat')
+        if params.get('phone_number'):
+            result.phone_number = params.get('phone_number')
+        if params.get('hometown'):
+            result.hometown = params.get('hometown')
+        if params.get('future_city'):
+            result.future_city = params.get('future_city')
+        if params.get('future_school'):
+            result.future_school = params.get('future_school')
+        result.save()
         return Response()
 
 
@@ -123,7 +142,7 @@ class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
         if not activity_id:
             raise exceptions.ValidationError('Param activity_id is none')
         result = Register.objects.filter(user_id=user_info.get('user_id'), activity_id=activity_id)
-        return Response(True if result else False)
+        return Response(True if len(result) != 0 else False)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
