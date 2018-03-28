@@ -1,4 +1,6 @@
 # coding: utf-8
+import uuid
+
 from rest_framework import serializers
 from invitation.models import Invitation
 
@@ -7,9 +9,11 @@ class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitation
         fields = ['id', 'inviter', 'invitee', 'create_time', 'status', 'update_at', 'expire_at']
-        read_only_fields = ['id', 'inviter', 'expire_at']
+        read_only_fields = ['id', 'inviter', 'expire_at', 'status']
 
     def create(self, validated_data):
-        print('3333333333333336666666666666')
+        validated_data['id'] = str(uuid.uuid4())
+        validated_data['inviter'] = self.context.get('request').user_info.get('open_id')
         validated_data['expire_at'] = validated_data['create_time']
-        print(type(validated_data['expire_at']))
+        validated_data['status'] = 0
+        return super().create(validated_data)
