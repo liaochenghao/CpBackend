@@ -27,6 +27,10 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
+        # 查看当前用户是否已经注册过信息
+        record = RegisterInfo.objects.filter(user_id=request.data.get('user'))
+        if record:
+            raise exceptions.ValidationError('当前用户已经注册过信息')
         # 将注册信息录入数据库
         request.data['id'] = str(uuid.uuid4())
         request.data['user'] = request.user_info.get('open_id')
