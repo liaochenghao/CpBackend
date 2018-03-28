@@ -95,6 +95,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
 
     def update(self, request, *args, **kwargs):
         super().update(request, *args, **kwargs)
+        return Response()
 
 
 class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
