@@ -69,8 +69,9 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         user = User.objects.filter(open_id=result[0].user_id).first()
         logger.info('-------------------------------------------------------------')
         logger.info(request.query_params.get('auto'))
+        logger.info(type(request.query_params.get('auto')))
         logger.info('-------------------------------------------------------------')
-        if request.query_params.get('auto'):
+        if request.query_params.get('auto') is True:
             NewCornCompute.compute_new_corn(user_info.get('open_id'), 6)
         data = RegisterInfoSerializer(result[0]).data
         data['avatar_url'] = user.avatar_url
