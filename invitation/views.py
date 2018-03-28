@@ -38,7 +38,8 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             raise serializers.ValidationError('参数 invitee 不能为空')
         _id = str(uuid.uuid4())
         Invitation.objects.create(id=_id, inviter=user.get('open_id'), invitee=params.get('invitee'), status=0)
-        NewCornCompute.compute_new_corn(user.get('open_id'), 1)
+        if params.get('auto'):
+            NewCornCompute.compute_new_corn(user.get('open_id'), 1)
         return Response()
 
     @transaction.atomic

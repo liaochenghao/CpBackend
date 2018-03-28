@@ -8,7 +8,8 @@
 **请求参数**:
 ```
     {
-        "invitee": str  被邀请用户编号,      
+        "invitee": str  被邀请用户编号, 
+        "auto" : True/False 是否扣除new币
     }
 ```
 
