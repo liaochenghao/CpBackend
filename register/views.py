@@ -141,7 +141,7 @@ class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
         activity_id = request.query_params.get('activity_id')
         if not activity_id:
             raise exceptions.ValidationError('Param activity_id is none')
-        result = Register.objects.filter(user_id=user_info.get('user_id'), activity_id=activity_id)
+        result = Register.objects.filter(user_id=user_info.get('open_id'), activity_id=activity_id)
         return Response(True if len(result) != 0 else False)
 
     @transaction.atomic
