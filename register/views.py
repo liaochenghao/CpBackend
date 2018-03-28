@@ -27,6 +27,9 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
+        print('===============hhhhhh====================')
+        print(request.data)
+        print('=================hhhhh==================')
         # 将注册信息录入数据库
         super().create(request, *args, **kwargs)
         # 报名指定的活动
