@@ -10,7 +10,6 @@ class RegisterInfoSerializer(serializers.ModelSerializer):
         fields = ['id', 'nickname', 'sexual_orientation', 'overseas_study_status', 'wechat', 'phone_number', 'hometown',
                   'future_city', 'future_school', 'user', 'create_at', 'update_at', 'constellation', 'sex', 'birthday',
                   'demand_area', 'demand_cp_age', 'degree']
-        read_only_fields = ['id']
 
 
 class RegisterSerializer(serializers.ModelSerializer):
