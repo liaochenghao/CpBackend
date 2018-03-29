@@ -25,10 +25,10 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         inviter = self.request.query_params.get('inviter')
         invitee = self.request.query_params.get('invitee')
         if inviter:
-            sql = """select B.*, C.nickname, C.avatar_url from invitation B, register_info C 
+            sql = """select B.*, C.nickname, C.avatar_url,C.sex from invitation B, register_info C 
                      where  B.inviter=C.user_id AND B.inviter='%s'""" % inviter
         if invitee:
-            sql = """select B.*, C.nickname, C.avatar_url from invitation B, register_info C 
+            sql = """select B.*, C.nickname, C.avatar_url,C.sex from invitation B, register_info C 
                      where  B.invitee=C.user_id AND B.invitee='%s'""" % invitee
         datas = execute_custom_sql(sql)
         logger.info(datas)
@@ -44,6 +44,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             temp['expire_at'] = data[6]
             temp['nickname'] = data[7]
             temp['avatar_url'] = data[8]
+            temp['sex'] = data[9]
             data_list.append(temp)
         return Response(data_list)
 
