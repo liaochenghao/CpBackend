@@ -2,11 +2,12 @@
 import datetime
 import json
 import logging
+import random
+
 import requests
 from rest_framework import exceptions
 from CpBackend.settings import WX_SMART_CONFIG
 from authentication.models import User
-from register.models import NewCornRecord
 from ticket.functions import TicketAuthorize
 
 logger = logging.getLogger('django')
@@ -34,16 +35,15 @@ class WxInterface:
             logger.info(res)
             # 首先查询数据库中是否存在该用户信息
             user = User.objects.filter(open_id=res['openid']).first()
-            logger.info('11111111111111================================================')
             if not user:
-                logger.info('222222222222================================================')
+                # 给用户生成活动码
+                seed = random.random()
+                code = str(int(seed * 1000000))
                 # 如果用户不存在，则向数据库插入数据
                 user = User.objects.create(open_id=res['openid'], last_login=datetime.datetime.now(),
-                                           session_key=res['session_key'])
+                                           session_key=res['session_key'], code=code)
             else:
-                logger.info('3333333333================================================')
                 user.last_login = datetime.datetime.now()
-                logger.info('444444444================================================')
                 user.save()
             ticket = TicketAuthorize.create_ticket(res['openid'])
             return {'user_id': user.open_id, 'ticket': ticket}

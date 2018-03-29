@@ -33,6 +33,8 @@
 - [向用户发送邀请](docs/invitation/send_invitation.md)
 - [接收用户邀请](docs/invitation/accept_invitation.md)
 - [查询用户邀请记录](docs/invitation/invitation_list.md)
+- [检查是否有匹配成功的邀请](docs/invitation/check_inviter.md)
+- [检查有效的邀请](docs/invitation/check_invitee.md)
 - [获取用户new币](docs/register/get_new_corn.md)
 - [获取用户new币使用记录](docs/register/get_new_corn_list.md)
 - [获取用户CP信息](docs/invitation/cp.md)

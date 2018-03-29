@@ -1,8 +1,9 @@
 import uuid
 
+import datetime
 from django.db import transaction
 from rest_framework import mixins, viewsets, serializers
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from common.ComputeNewCorn import NewCornCompute
 from invitation.models import Invitation
@@ -55,7 +56,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             NewCornCompute.compute_new_corn(user.get('open_id'), 5)
         return Response()
 
-    @detail_route(methods=['get'])
+    @list_route(methods=['get'])
     def cp(self, request, pk):
         result = Invitation.objects.filter(inviter=pk, status=1)
         if not result:
@@ -65,3 +66,15 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         temp = RegisterInfoSerializer(data).data
         temp['update_at'] = result[0].update_at
         return Response(temp)
+
+    @list_route(methods=['get'])
+    def check_inviter(self, request):
+        user = request.user_info
+        data = Invitation.objects.filter(inviter=user.get('open_id'), status=1)
+        return Response(True if data else False)
+
+    @list_route(methods=['get'])
+    def check_invitee(self, request):
+        user = request.user_info
+        data = Invitation.objects.filter(invitee=user.get('open_id'), status=0, expire_at__gt=datetime.datetime.now())
+        return Response(True if data else False)

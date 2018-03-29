@@ -34,13 +34,28 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         # 将注册信息录入数据库
         request.data['id'] = str(uuid.uuid4())
         request.data['user'] = request.user_info.get('open_id')
+        request.data['constellation'] = self._get_constellations(request.data['birthday'])
         super().create(request, *args, **kwargs)
         # 报名指定的活动
         Register.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
                                 activity_id=request.data.get('activity'))
-        # 给新用户添加New币
-        NewCornCompute.compute_new_corn(request.data.get('user'), 2)
         return Response()
+
+    def _get_constellations(self, birthday):
+        """
+        根据出生日期计算星座
+        :param birthday: 
+        :return: 
+        """
+        temp = datetime.datetime.strptime(birthday, "%Y-%m-%d")
+        day = temp.day
+        month = temp.month
+        dates = (21, 20, 21, 21, 22, 22, 23, 24, 24, 24, 23, 22)
+        constellations = ("摩羯", "水瓶", "双鱼", "白羊", "金牛", "双子", "巨蟹", "狮子", "处女", "天秤", "天蝎", "射手", "摩羯")
+        if day < dates[month - 1]:
+            return constellations[month - 1]
+        else:
+            return constellations[month]
 
     def get_queryset(self):
         queryset = super().get_queryset()
