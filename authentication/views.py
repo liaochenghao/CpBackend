@@ -42,6 +42,7 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         if not data.data:
             logger.info('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
             raise serializers.ValidationError('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
+        # 用户每日登陆获取new币
         NewCornCompute.compute_new_corn(user_info.open_id, 3)
         # 录入用户信息到数据库，同时也要注意微信用户可能会更换信息
         if user_info.nick_name != params.get('nick_name') or user_info.avatar_url != params.get('avatar_url'):
