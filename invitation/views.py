@@ -25,25 +25,25 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         inviter = self.request.query_params.get('inviter')
         invitee = self.request.query_params.get('invitee')
         if inviter:
-            sql = """select A.avatar_url, B.*, C.nickname from `user` A, invitation B, register_info C 
-                     where A.open_id=B.inviter and A.open_id=C.user_id AND B.inviter='%s'""" % inviter
+            sql = """select B.*, C.nickname, C.avatar_url from invitation B, register_info C 
+                     where  B.inviter=C.user_id AND B.inviter='%s'""" % inviter
         if invitee:
-            sql = """select A.avatar_url, B.*, C.nickname from `user` A, invitation B, register_info C 
-                                 where A.open_id=B.inviter and A.open_id=C.user_id AND B.invitee='%s'""" % invitee
+            sql = """select B.*, C.nickname, C.avatar_url from invitation B, register_info C 
+                     where  B.invitee=C.user_id AND B.invitee='%s'""" % invitee
         datas = execute_custom_sql(sql)
         logger.info(datas)
         data_list = []
         for data in datas:
             temp = dict()
-            temp['avatar_url'] = data[0]
-            temp['id'] = data[1]
-            temp['inviter'] = data[2]
-            temp['invitee'] = data[3]
-            temp['status'] = data[4]
-            temp['create_time'] = data[5]
-            temp['update_at'] = data[6]
-            temp['expire_at'] = data[7]
-            temp['nickname'] = data[8]
+            temp['id'] = data[0]
+            temp['inviter'] = data[1]
+            temp['invitee'] = data[2]
+            temp['status'] = data[3]
+            temp['create_time'] = data[4]
+            temp['update_at'] = data[5]
+            temp['expire_at'] = data[6]
+            temp['nickname'] = data[7]
+            temp['avatar_url'] = data[8]
             data_list.append(temp)
         return Response(data_list)
 
@@ -104,3 +104,29 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         user = request.user_info
         data = Invitation.objects.filter(invitee=user.get('open_id'), status=0, expire_at__gt=datetime.datetime.now())
         return Response(True if data else False)
+
+    @list_route(methods=['get'])
+    def cp_god(self, request):
+        user = request.user_info
+        result = list()
+        pageNum = request.query_params.get('pageNum', 1)
+        pageSize = request.query_params.get('pageSize', 10)
+        start = pageSize * (pageNum - 1)
+        end = pageSize * pageNum
+        sql1 = """SELECT invitee,COUNT(*) as number from invitation GROUP BY invitee ORDER BY number desc 
+                limit %s, %s""" % (start, end)
+        datas = execute_custom_sql(sql1)
+        id_list = list()
+        temp_dict = dict()
+        for data in datas:
+            id_list.append(data[0])
+            temp_dict[data[0]] = data[1]
+        register_info = RegisterInfo.objects.filter(user_id__in=id_list).values('user_id', 'avatar_url', 'nickname')
+        infos = RegisterInfoSerializer(register_info, many=True).data
+        for info in infos:
+            info['total'] = temp_dict.get(info['user_id'])
+        temp = Invitation.objects.filter(invitee=user.get('open_id'), inviter__in=id_list, status=0).values('invitee')
+        for info in infos:
+            info['invite'] = 1 if info['user_id'] in list(temp) else 0
+            result.append(info)
+        return Response(result)

@@ -37,6 +37,7 @@ class RegisterInfo(models.Model):
     demand_cp_age = models.IntegerField('对CP的年龄要求', choices=CP_AGE)
     degree = models.CharField('学位', max_length=32)
     user = models.ForeignKey(User)
+    avatar_url = models.CharField('用户微信头像地址', max_length=255, null=True)
     create_at = models.DateTimeField('注册时间', auto_now_add=True, null=True)
     update_at = models.DateTimeField('修改时间', auto_now=True, null=True)
 
