@@ -133,10 +133,16 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         code = params.get('code')
         # 获取邀请类型
         type = params.get('type', 0)
+        other_open_id = params.get('other_open_id')
+        nickname = params.get('nickname')
         if not code:
             raise serializers.ValidationError('参数 code 不能为空')
+        if not other_open_id:
+            raise serializers.ValidationError('参数 other_open_id 不能为空')
+        if not nickname:
+            raise serializers.ValidationError('参数 nickname 不能为空')
         inviter = User.objects.filter(code=code)
         if not inviter:
             raise serializers.ValidationError('参数 code 无效')
-        NewCornCompute.compute_new_corn(inviter[0].get('open_id'), type)
+        NewCornCompute.compute_new_corn(inviter[0].get('open_id'), type, other_open_id, nickname)
         return Response()

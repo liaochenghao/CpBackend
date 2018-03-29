@@ -21,25 +21,28 @@ OPTION_CHOICE = (
 
 class NewCornCompute:
     @staticmethod
-    def compute_new_corn(user_id, operation):
-        logger.info('compute_new_corn user_id=%s, operation=%s' %(user_id, operation))
+    def compute_new_corn(user_id, operation, other_open_id=None, nickname=None):
+        logger.info('compute_new_corn user_id=%s, operation=%s' % (user_id, operation))
         # 新关注公众号与注册成功的new币计算规则一致，都是要判断用户是否是首次，且不允许重复
         if operation == 0 or operation == 2:
+            # 查询数据库是否已有new币记录
             record = NewCornRecord.objects.filter(user_id=user_id)
             corn = 3
             extra = '关注留学新青年' if operation == 0 else '关注北美留学生'
+            extra = '邀请用户'+nickname+extra
+            # 数据库中没有当前用户new币记录则创建
             if not record:
                 NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=user_id, operation=operation, balance=corn,
-                                             corn=corn, extra=extra)
+                                             corn=corn, extra=extra, other_open_id=other_open_id)
             else:
-                temp = NewCornRecord.objects.filter(user_id=user_id, operation=operation)
+                temp = NewCornRecord.objects.filter(user_id=user_id, operation=operation, other_open_id=other_open_id)
                 # 判断是否是首次关注
                 if not temp:
                     balance = record[0].balance
                     NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=user_id, operation=operation,
                                                  balance=corn + balance,
                                                  corn=corn,
-                                                 extra=extra)
+                                                 extra=extra, other_open_id=other_open_id)
         # 每日登陆的逻辑处理
         elif operation == 3:
             start_date = datetime.datetime.now()
