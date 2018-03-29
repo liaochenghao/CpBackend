@@ -196,17 +196,3 @@ class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins
             balance = new_corn_record.balance
         return Response({'user_id': user_id, 'balance': balance})
 
-    @detail_route(methods=['post'])
-    def compute(self, request, pk):
-        params = request.data
-        operation = params.get('operation')
-        if operation not in (0, 1, 2):
-            raise exceptions.ValidationError('Param operation not in (0,1,2)')
-        record = NewCornRecord.objects.filter(user_id=pk).first()
-        balance = record.balance
-        if operation in (0, 1):
-            balance += 10
-        else:
-            balance -= 10
-        NewCornRecord.objects.create(user=pk, operation=operation, corn=10, balance=balance)
-        return Response()
