@@ -1,11 +1,12 @@
 # Create your views here.
 from django.db import transaction
 from rest_framework import mixins, viewsets, serializers
-from rest_framework.decorators import list_route
+from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from common.ComputeNewCorn import NewCornCompute
 from authentication.models import User
 from authentication.serializers import UserSerializer
+from register.models import RegisterInfo, NewCornRecord
 from utils.weixin_functions import WxInterfaceUtil
 import logging
 
@@ -54,3 +55,17 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
             user_info.language = params.get('language')
             user_info.save()
         return Response()
+
+    @list_route(['get'])
+    def information(self, request):
+        user = request.user_info
+        result = dict()
+        register_info = RegisterInfo.objects.filter(user_id=user.get('open_id'))
+        if register_info:
+            result['nickname'] = register_info[0].nickname
+        record = NewCornRecord.objects.filter(user_id=user.get('open_id'))[0:1]
+        if record:
+            result['balance'] = record[0].balance
+        result['avatar_url'] = user.get('avatar_url')
+        result['code'] = user.get('code')
+        return Response(result)
