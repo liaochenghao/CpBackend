@@ -26,7 +26,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class NewCornRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewCornRecord
-        fields = ['id', 'user', 'operation', 'corn', 'create_at', 'extra']
+        fields = ['id', 'user', 'operation', 'corn', 'create_at', 'extra', 'balance']
         read_only_fields = ['id']
 
     def create(self, validated_data):
