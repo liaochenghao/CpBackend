@@ -1,12 +1,8 @@
-import uuid
-
 import datetime
 from django.db import transaction
 from rest_framework import mixins, viewsets, serializers
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from rest_framework.views import APIView
-
 from authentication.models import User
 from common.ComputeNewCorn import NewCornCompute
 from invitation.models import Invitation
@@ -35,6 +31,10 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
                      where  B.invitee=C.user_id AND B.invitee='%s'""" % invitee
         datas = execute_custom_sql(sql)
         logger.info(datas)
+        result = self._wrapper_data(datas)
+        return Response(result)
+
+    def _wrapper_data(self, datas):
         data_list = []
         for data in datas:
             temp = dict()
@@ -49,17 +49,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             temp['avatar_url'] = data[8]
             temp['sex'] = data[9]
             data_list.append(temp)
-        return Response(data_list)
-
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     inviter = self.request.query_params.get('inviter')
-    #     invitee = self.request.query_params.get('invitee')
-    #     if inviter:
-    #         queryset = queryset.filter(inviter=inviter)
-    #     if invitee:
-    #         queryset = queryset.filter(invitee=invitee)
-    #     return queryset
+        return data_list
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
