@@ -122,7 +122,8 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         for data in datas:
             id_list.append(data[0])
             temp_dict[data[0]] = data[1]
-        register_info = RegisterInfo.objects.filter(user_id__in=id_list).values('user_id', 'avatar_url', 'nickname')
+        register_info = RegisterInfo.objects.filter(user_id__in=id_list).values('user_id', 'avatar_url', 'nickname',
+                                                                                'sex')
         infos = RegisterInfoSerializer(register_info, many=True).data
         for info in infos:
             info['total'] = temp_dict.get(info['user_id'])
