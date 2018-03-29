@@ -32,6 +32,7 @@
 - [获取用户信息](docs/register/get_register_info.md)
 - [向用户发送邀请](docs/invitation/send_invitation.md)
 - [接收用户邀请](docs/invitation/accept_invitation.md)
+- [获取CP大神](docs/invitation/invitation_cp.md)
 - [查询用户邀请记录](docs/invitation/invitation_list.md)
 - [检查是否有匹配成功的邀请](docs/invitation/check_inviter.md)
 - [检查有效的邀请](docs/invitation/check_invitee.md)
