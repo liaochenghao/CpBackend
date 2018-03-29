@@ -39,4 +39,5 @@
 - [获取用户new币](docs/register/get_new_corn.md)
 - [获取用户new币使用记录](docs/register/get_new_corn_list.md)
 - [获取用户CP信息](docs/invitation/cp.md)
+- [其他渠道获取new币](docs/invitation/invitation_code.md)
 

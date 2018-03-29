@@ -5,6 +5,9 @@ from django.db import transaction
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from authentication.models import User
 from common.ComputeNewCorn import NewCornCompute
 from invitation.models import Invitation
 from invitation.serializer import InvitationSerializer
@@ -132,3 +135,18 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             info['invite'] = 1 if info['user_id'] in list(temp) else 0
             result.append(info)
         return Response(result)
+
+    @list_route(methods=['get'])
+    def code(self, request):
+        params = request.query_params
+        # 获取邀请码
+        code = params.get('code')
+        # 获取邀请类型
+        type = params.get('type', 0)
+        if not code:
+            raise serializers.ValidationError('参数 code 不能为空')
+        inviter = User.objects.filter(code=code)
+        if not inviter:
+            raise serializers.ValidationError('参数 code 无效')
+        NewCornCompute.compute_new_corn(inviter[0].get('open_id'), type)
+        return Response()

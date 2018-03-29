@@ -11,7 +11,7 @@ logger = logging.getLogger('django')
 OPTION_CHOICE = (
     (0, '关注留学新青年'),
     (1, '邀请用户'),
-    (2, '注册成功'),
+    (2, '关注北美留学生'),
     (3, '每日登陆'),
     (4, '活动报名'),
     (5, '接受用户邀请'),
@@ -26,8 +26,8 @@ class NewCornCompute:
         # 新关注公众号与注册成功的new币计算规则一致，都是要判断用户是否是首次，且不允许重复
         if operation == 0 or operation == 2:
             record = NewCornRecord.objects.filter(user_id=user_id)
-            corn = 3 if operation == 0 else 20
-            extra = '关注留学新青年' if operation == 0 else '注册成功'
+            corn = 3
+            extra = '关注留学新青年' if operation == 0 else '关注北美留学生'
             if not record:
                 NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=user_id, operation=operation, balance=corn,
                                              corn=corn, extra=extra)

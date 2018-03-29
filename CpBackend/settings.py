@@ -191,4 +191,4 @@ REDIS_CONFIG = {
     'port': 6379
 }
 
-ignore_auth_urls = ['/api/v1/user/authorize/']
+ignore_auth_urls = ['/api/v1/user/authorize/', 'api/v1/invitation/code/']
