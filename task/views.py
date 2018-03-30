@@ -5,8 +5,8 @@ from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from CpBackend import settings
-from task.models import Task, UserTask
-from task.serializer import TaskSerializer, UserTaskSerializer, User
+from task.models import Task, UserTask, UserTaskResult
+from task.serializer import TaskSerializer, UserTaskSerializer, User, UserTaskResultSerializer
 
 
 class TaskView(APIView):
@@ -62,21 +62,29 @@ class UserTaskView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
                                 cp_user_id=cp_user_id)
         return Response("任务领取成功")
 
-    def update(self, request, *args, **kwargs):
+
+class UserTaskResultView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
+                         mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
+    queryset = UserTaskResult.objects.all()
+    serializer_class = UserTaskResultSerializer
+
+    def create(self, request, *args, **kwargs):
         user = request.user_info
-        task_id = kwargs.get('pk')
-        content = request.data.get('content')
-        if not content:
-            raise serializers.ValidationError('参数content不能为空')
-        user_task = UserTask.objects.filter(Q(user_id=user.get('open_id')) | Q(cp_user_id=user.get('open_id')),
-                                            task_id=task_id)
-        if not user_task:
-            raise serializers.ValidationError('当前用户没有领取该任务')
-        user_task[0].extra = content
-        user_task[0].save()
+        request.data['user_id'] = user.get('open_id')
+        cp_user_ids = User.objects.filter(open_id=user.get('open_id')).value_list('cp_user_id')
+        if not cp_user_ids:
+            raise serializers.ValidationError('当前用户暂无CP信息')
+        request.data['cp_user_id'] = cp_user_ids[0]
+        super().create(request, *args, **kwargs)
         return Response()
 
     @list_route(methods=['get'])
-    def check_cp_task(self):
-
-        return Response()
+    def check_cp_task(self, request):
+        user = request.user_info
+        cp_user_ids = User.objects.filter(open_id=user.get('open_id')).value_list('cp_user_id')
+        if not cp_user_ids:
+            raise serializers.ValidationError('当前用户暂无CP信息')
+        # 在cp列表中，当前用户可能是邀请人也有可能是被邀请人
+        cp_user_id = cp_user_ids[0]
+        result = UserTaskResult.objects.filter(cp_user_id=cp_user_id)
+        return Response(True if result else False)
