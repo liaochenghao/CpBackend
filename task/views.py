@@ -1,4 +1,5 @@
-from django.db.models import Q, uuid
+from django.db.models import Q
+import uuid
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
