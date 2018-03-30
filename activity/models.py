@@ -10,7 +10,7 @@ class Activity(models.Model):
     register_time = models.CharField('报名时间', max_length=64, null=True)
     activity_time = models.CharField('活动时间', max_length=64, null=True)
     start_at = models.DateTimeField('活动开始时间', null=True)
-    user_plan_count = models.IntegerField('计划报名人数')
+    user_plan_count = models.IntegerField('计划报名人数', null=True)
 
     class Meta:
         db_table = "activity"

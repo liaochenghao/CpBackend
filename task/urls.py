@@ -18,9 +18,9 @@ from rest_framework import routers
 from task.views import TaskView
 
 router = routers.SimpleRouter()
-# router.register(r'register', RegisterView)
+# router.register(r'task', RegisterView)
 urlpatterns = router.urls
 
 urlpatterns += [
-    url(r'^task/upload', TaskView.as_view()),
+    url(r'^task', TaskView.as_view()),
 ]
