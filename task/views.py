@@ -1,12 +1,12 @@
 from django.db.models import Q
 import uuid
 from rest_framework import mixins, viewsets, serializers
+from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from CpBackend import settings
-from invitation.models import Invitation
 from task.models import Task, UserTask
-from task.serializer import TaskSerializer, UserTaskSerializer
+from task.serializer import TaskSerializer, UserTaskSerializer, User
 
 
 class TaskView(APIView):
@@ -52,11 +52,12 @@ class UserTaskView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
         if not param.get('task_id'):
             raise serializers.ValidationError('参数task_id不能为空')
         user = request.user_info
-        # 首先判断当前用户是否有CP
-        cp_result = Invitation.objects.filter(Q(invitee=user.get('open_id')) | Q(inviter=user.get('open_id')), status=1)
+        # 首先判断当前用户是否有CP，如果有CP，则一定查询到2条记录，否则0条记录
+        cp_result = User.objects.filter(
+            Q(cp_user_id=user.get('open_id')) | Q(open_id=user.get('open_id', cp_user_id__isnull=False)))
         if not cp_result:
             raise serializers.ValidationError('当前用户暂无CP信息')
-        cp_user_id = cp_result[0].invitee if cp_result[0].inviter == user.get('open_id') else cp_result[0].inviter
+        cp_user_id = cp_result[0].cp_user_id if cp_result[0].open_id == user.get('open_id') else cp_result[1].open_id
         UserTask.objects.create(id=str(uuid.uuid4()), task_id=param.get('task_id'), user_id=user.get('open_id'),
                                 cp_user_id=cp_user_id)
         return Response("任务领取成功")
@@ -73,4 +74,9 @@ class UserTaskView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
             raise serializers.ValidationError('当前用户没有领取该任务')
         user_task[0].extra = content
         user_task[0].save()
+        return Response()
+
+    @list_route(methods=['get'])
+    def check_cp_task(self):
+
         return Response()

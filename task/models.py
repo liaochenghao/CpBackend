@@ -36,9 +36,23 @@ class UserTask(models.Model):
         ordering = ['-create_at']
 
 
+class UserTaskResult(models.Model):
+    id = models.CharField('序列号', max_length=64, primary_key=True)
+    task = models.ForeignKey(Task)
+    user_id = models.CharField("用户编号", max_length=64)
+    cp_user_id = models.CharField('CP编号', max_length=64)
+    content = models.CharField('任务结果描述', max_length=255)
+    create_at = models.DateTimeField('创建时间', auto_now_add=True, null=True)
+
+    class Meta:
+        db_table = "user_task_result"
+        ordering = ['-create_at']
+
+
 class UserTaskImageMapping(models.Model):
     id = models.CharField('序列号', max_length=64, primary_key=True)
     task = models.ForeignKey(Task)
+    user_id = models.CharField("用户编号", max_length=64)
     image_url = models.CharField('对应上传图片路径', max_length=64)
     extra = models.CharField('备注说明', null=True, max_length=64)
     create_at = models.DateTimeField('创建时间', auto_now_add=True, null=True)
