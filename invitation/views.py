@@ -147,5 +147,5 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         inviter = User.objects.filter(code=code)
         if not inviter:
             raise serializers.ValidationError('参数 code 无效')
-        NewCornCompute.compute_new_corn(inviter[0].get('open_id'), type, other_open_id, nickname)
+        NewCornCompute.compute_new_corn(inviter[0].open_id, type, other_open_id, nickname)
         return Response()
