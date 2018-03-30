@@ -21,6 +21,8 @@ class User(models.Model):
     create_time = models.DateTimeField('创建时间', auto_now_add=True, null=True)
     code = models.CharField('用户活动码', max_length=16, null=True)
     last_login = models.DateTimeField('最后登录时间', null=True)
+    cp_user_id = models.CharField('用户CP编号', max_length=64, null=True)
+    cp_time = models.DateTimeField('CP匹配成功时间', null=True)
 
     class Meta:
         db_table = "user"

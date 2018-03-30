@@ -65,6 +65,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
     @transaction.atomic
     def update(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
+        inviter = kwargs.get('inviter')
         user = request.user_info
         status = request.data.get('status')
         if not status or status not in (0, 1, 2):
@@ -74,7 +75,12 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         invitation.status = status
         invitation.save()
         if status == 1:
+            # 接收邀请，CP匹配成功
             NewCornCompute.compute_new_corn(user.get('open_id'), 5)
+            # 同时更新User，将当前用户与inviter的cp_user_id进行更新
+            now = datetime.datetime.now()
+            User.objects.filter(open_id=user.get('open_id')).update(cp_user_id=inviter, cp_time=now)
+            User.objects.filter(open_id=inviter).update(cp_user_id=user.get('open_id'), cp_time=now)
         return Response()
 
     @list_route(methods=['get'])
