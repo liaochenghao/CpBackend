@@ -107,7 +107,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         pageSize = request.query_params.get('pageSize', 10)
         start = pageSize * (pageNum - 1)
         end = pageSize * pageNum
-        sql1 = """SELECT invitee,COUNT(*) as number from invitation GROUP BY invitee ORDER BY number desc 
+        sql1 = """SELECT invitee,COUNT(*) as number from invitation GROUP BY invitee ORDER BY number desc
                 limit %s, %s""" % (start, end)
         datas = execute_custom_sql(sql1)
         id_list = list()
@@ -115,15 +115,18 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         for data in datas:
             id_list.append(data[0])
             temp_dict[data[0]] = data[1]
-        register_info = RegisterInfo.objects.filter(user_id__in=id_list).values('user_id', 'avatar_url', 'nickname',
-                                                                                'sex')
-        infos = RegisterInfoSerializer(register_info, many=True).data
-        for info in infos:
-            info['total'] = temp_dict.get(info['user_id'])
+        register_info = RegisterInfo.objects.filter(user_id__in=id_list)
+        for temp in register_info:
+            data_temp = dict()
+            data_temp['avatar_url'] = temp.avatar_url
+            data_temp['nickname'] = temp.nickname
+            data_temp['sex'] = temp.sex
+            data_temp['total'] = temp_dict.get(temp.user_id)
+            data_temp['user_id'] = temp.user_id
+            result.append(data_temp)
         temp = Invitation.objects.filter(invitee=user.get('open_id'), inviter__in=id_list, status=0).values('invitee')
-        for info in infos:
+        for info in result:
             info['invite'] = 1 if info['user_id'] in list(temp) else 0
-            result.append(info)
         return Response(result)
 
     @list_route(methods=['get'])
