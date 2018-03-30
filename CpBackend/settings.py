@@ -180,6 +180,9 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 WX_SMART_CONFIG = {
     'appid': 'wx8876efe53e30197f',
     'secret': '4679e341aec53b79ba55ed7a7c26fe28'
