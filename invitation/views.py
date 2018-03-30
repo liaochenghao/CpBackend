@@ -85,7 +85,10 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             raise serializers.ValidationError('该用户暂不存在CP')
         # 在cp列表中，当前用户可能是邀请人也有可能是被邀请人
         cp_id = result[0].inviter if user.get('open_id') == result[0].invitee else result[0].invitee
-        data = RegisterInfo.objects.filter(open_id=cp_id).first()
+        data = RegisterInfo.objects.filter(user_id=cp_id)
+        if not data:
+            raise serializers.ValidationError('该用户CP无注册信息，请检查数据库')
+        data = data.first()
         temp = RegisterInfoSerializer(data).data
         temp['update_at'] = result[0].update_at
         return Response(temp)
