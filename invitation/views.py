@@ -1,5 +1,6 @@
 import datetime
 from django.db import transaction
+from django.db.models import Q
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
@@ -77,12 +78,14 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         return Response()
 
     @list_route(methods=['get'])
-    def cp(self, request, pk):
-        result = Invitation.objects.filter(inviter=pk, status=1)
+    def cp(self, request):
+        user = request.user_info
+        result = Invitation.objects.filter(Q(inviter=user.get('open_id')) | Q(invitee=user.get('open_id')), status=1)
         if not result:
             raise serializers.ValidationError('该用户暂不存在CP')
-        invitee = result[0].invitee
-        data = RegisterInfo.objects.filter(open_id=invitee).first()
+        # 在cp列表中，当前用户可能是邀请人也有可能是被邀请人
+        cp_id = result[0].inviter if user.get('open_id') == result[0].invitee else result[0].invitee
+        data = RegisterInfo.objects.filter(open_id=cp_id).first()
         temp = RegisterInfoSerializer(data).data
         temp['update_at'] = result[0].update_at
         return Response(temp)

@@ -2,13 +2,13 @@
 
 **请求地址**:
 ```
-    PUT     api/v1/invitation/XXXX
+    PUT     api/v1/invitation/XXXX {邀请信息编号} 
 ```
 
 **请求参数**:
 ```
     {
-        "status": str  被邀请用户编号,     (0, 1, 2) 
+        "status": str ,     (0-有效, 1-成功) 
     }
 ```
 

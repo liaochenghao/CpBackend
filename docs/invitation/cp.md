@@ -2,7 +2,7 @@
 
 **请求地址**:
 ```
-    GET     api/v1/invitation/XXXX/cp
+    GET     api/v1/invitation/cp
 ```
 
 **请求参数**:
