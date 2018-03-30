@@ -66,6 +66,9 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
     def update(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
         inviter = kwargs.get('inviter')
+        logger.info('===========================================')
+        logger.info(inviter)
+        logger.info('===========================================')
         user = request.user_info
         status = request.data.get('status')
         if not status or status not in (0, 1, 2):
