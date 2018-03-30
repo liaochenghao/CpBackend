@@ -21,16 +21,29 @@ class TaskView(APIView):
         task_ids = list()
         for task in all_task:
             task_ids.append(task['id'])
-        user_task_ids = UserTask.objects.filter(Q(user_id=user.get('open_id')) | Q(cp_user_id=user.get('open_id')),
-                                                task_id__in=task_ids).values('task_id')
+        user_task_infos = UserTask.objects.filter(Q(user_id=user.get('open_id')) | Q(cp_user_id=user.get('open_id')),
+                                                  task_id__in=task_ids).values('task_id', 'status')
         for task in all_task:
-            task['attend'] = True if task['id'] in list(user_task_ids[0]['task_id']) else False
+            task['attend'] = False
+            for info in user_task_infos:
+                if task['id'] == info['task_id']:
+                    task['attend'] = True
+                    task['status'] = info['status']
+                    break
         return Response(all_task)
 
     def post(self, request):
-        f1 = request.FILES['image']
-        fname = '%s/upload/task/%s' % (settings.MEDIA_ROOT, f1.name)
-        with open(fname, 'wb') as pic:
-            for c in f1.chunks():
-                pic.write(c)
-        return Response()
+        pass
+
+
+# f1 = request.FILES['image']
+# fname = '%s/upload/task/%s' % (settings.MEDIA_ROOT, f1.name)
+# with open(fname, 'wb') as pic:
+#     for c in f1.chunks():
+#         pic.write(c)
+# return Response()
+
+
+class UserTaskContentView(APIView):
+    def post(self, request):
+        pass

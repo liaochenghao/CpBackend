@@ -18,11 +18,15 @@ class Task(models.Model):
 
 
 class UserTask(models.Model):
+    STATUS = (
+        (0, '已领取'),
+        (1, '已完成')
+    )
     id = models.CharField('序列号', max_length=64, primary_key=True)
     task = models.ForeignKey(Task)
     user_id = models.CharField('率先领取任务的用户编号', max_length=64)
     cp_user_id = models.CharField('CP好友用户编号', max_length=64)
-    status = models.IntegerField('任务状态')
+    status = models.IntegerField('任务状态', default=0, choices=STATUS)
     extra = models.CharField('备注', max_length=255, null=True)
     create_at = models.DateTimeField('创建时间', auto_now_add=True, null=True)
     update_at = models.DateTimeField('修改时间', auto_now=True, null=True)
