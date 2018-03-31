@@ -1,7 +1,7 @@
 # Create your views here.
 from django.db import transaction
 from rest_framework import mixins, viewsets, serializers
-from rest_framework.decorators import list_route, detail_route
+from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from common.ComputeNewCorn import NewCornCompute
 from authentication.models import User
@@ -9,7 +9,7 @@ from authentication.serializers import UserSerializer
 from register.models import RegisterInfo, NewCornRecord
 from utils.weixin_functions import WxInterfaceUtil
 import logging
-
+from common.NewCornType import NewCornType
 logger = logging.getLogger('django')
 
 
@@ -43,7 +43,7 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
             logger.info('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
             raise serializers.ValidationError('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
         # 用户每日登陆获取new币
-        NewCornCompute.compute_new_corn(user_info.open_id, 3)
+        NewCornCompute.compute_new_corn(user_info.open_id, NewCornType.DAILY_LOGIN.value)
         # 录入用户信息到数据库，同时也要注意微信用户可能会更换信息
         if user_info.nick_name != params.get('nick_name') or user_info.avatar_url != params.get('avatar_url'):
             logger.info('check_account更新用户信息: user_id=%s' % params.get('user_id'))

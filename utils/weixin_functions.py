@@ -3,7 +3,6 @@ import datetime
 import json
 import logging
 import random
-
 import requests
 from rest_framework import exceptions
 from CpBackend.settings import WX_SMART_CONFIG
@@ -29,7 +28,7 @@ class WxInterface:
         response = requests.get(url=url, params=params)
         if response.status_code != 200:
             logger.info('WxInterface code_authorize response: %s' % response.text)
-            raise exceptions.ValidationError('connecting wechat server error')
+            raise exceptions.ValidationError('连接微信服务器异常')
         res = response.json()
         if res.get('openid') and res.get('session_key'):
             logger.info(res)
@@ -43,13 +42,14 @@ class WxInterface:
                 user = User.objects.create(open_id=res['openid'], last_login=datetime.datetime.now(),
                                            session_key=res['session_key'], code=code)
             else:
+                # 如果用户存在，更新用户信息
                 user.last_login = datetime.datetime.now()
                 user.save()
             ticket = TicketAuthorize.create_ticket(res['openid'])
             return {'user_id': user.open_id, 'ticket': ticket}
         else:
-            logger.info('WxInterface code_authorize response: %s' % response.text)
-            raise exceptions.ValidationError('wechat authorize error： %s' % json.dumps(res))
+            logger.info('微信认证异常 code_authorize response: %s' % response.text)
+            raise exceptions.ValidationError('微信认证异常： %s' % json.dumps(res))
 
 
 WxInterfaceUtil = WxInterface()

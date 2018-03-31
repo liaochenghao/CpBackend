@@ -13,7 +13,7 @@ from common.execute_sql import execute_custom_sql
 from redis_tool.redis_server import redis_client
 from register.models import RegisterInfo
 from register.serializer import RegisterInfoSerializer
-
+from common.NewCornType import NewCornType
 logger = logging.getLogger('django')
 
 
@@ -60,7 +60,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         if not params.get('invitee'):
             raise serializers.ValidationError('参数 invitee 不能为空')
         super().create(request, *args, **kwargs)
-        NewCornCompute.compute_new_corn(user.get('open_id'), 1)
+        NewCornCompute.compute_new_corn(user.get('open_id'), NewCornType.INVITE_USERS.value)
         return Response()
 
     @transaction.atomic
@@ -77,7 +77,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         invitation.save()
         if status == 1:
             # 接收邀请，CP匹配成功
-            NewCornCompute.compute_new_corn(user.get('open_id'), 5)
+            NewCornCompute.compute_new_corn(user.get('open_id'), NewCornType.ACCEPT_INVITATION.value)
             # 同时更新User，将当前用户与inviter的cp_user_id进行更新
             now = datetime.datetime.now()
             current_user = User.objects.filter(open_id=user.get('open_id')).update(cp_user_id=inviter, cp_time=now)

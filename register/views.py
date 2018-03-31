@@ -12,7 +12,7 @@ from invitation.models import Invitation
 import uuid
 import logging
 from common.ComputeNewCorn import NewCornCompute
-
+from common.NewCornType import NewCornType
 logger = logging.getLogger('django')
 
 
@@ -26,19 +26,22 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
+        user = request.user_info
         # 查看当前用户是否已经注册过信息
         record = RegisterInfo.objects.filter(user_id=request.data.get('user'))
         if record:
             raise exceptions.ValidationError('当前用户已经注册过信息')
         # 将注册信息录入数据库
         request.data['id'] = str(uuid.uuid4())
-        request.data['user'] = request.user_info.get('open_id')
+        request.data['user'] = user.get('open_id')
         request.data['constellation'] = self._get_constellations(request.data['birthday'])
         request.data['avatar_url'] = request.user_info.get('avatar_url')
         super().create(request, *args, **kwargs)
         # 报名指定的活动
         Register.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
                                 activity_id=request.data.get('activity'))
+        # 给新用户添加New币
+        NewCornCompute.compute_new_corn(user.get('open_id'), NewCornType.ATTEND_ACTIVITY.value)
         return Response()
 
     def _get_constellations(self, birthday):
@@ -89,7 +92,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         logger.info('随机获取到的用户ID= %s' % result[0].user_id)
         user = User.objects.filter(open_id=result[0].user_id).first()
         if request.query_params.get('auto') == 'True':
-            NewCornCompute.compute_new_corn(user_info.get('open_id'), 6)
+            NewCornCompute.compute_new_corn(user_info.get('open_id'), NewCornType.SWITCH_USER.value)
         data = RegisterInfoSerializer(result[0]).data
         data['avatar_url'] = user.avatar_url
         data['age'] = datetime.datetime.now().year - int(data['birthday'][:4])
@@ -170,7 +173,7 @@ class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
         Register.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
                                 activity_id=request.data.get('activity'))
         # 给新用户添加New币
-        NewCornCompute.compute_new_corn(user_info.get('open_id'), 6)
+        NewCornCompute.compute_new_corn(user_info.get('open_id'), NewCornType.ATTEND_ACTIVITY.value)
 
 
 class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin):
