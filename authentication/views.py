@@ -60,9 +60,6 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
     @list_route(['get'])
     def information(self, request):
         user = request.user_info
-        logger.info('================================================')
-        logger.info(user)
-        logger.info('================================================')
         result = dict()
         register_info = RegisterInfo.objects.filter(user_id=user.get('open_id'))
         if register_info:
@@ -72,5 +69,5 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
             result['balance'] = record[0].balance
         result['avatar_url'] = user.get('avatar_url')
         result['sex'] = user.get('gender')
-        result['code'] = user.get('code')
+        result['activity_code'] = user.get('code')
         return Response(result)
