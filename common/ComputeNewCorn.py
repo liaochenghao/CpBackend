@@ -29,7 +29,7 @@ class NewCornCompute:
             record = NewCornRecord.objects.filter(user_id=user_id)
             corn = 3
             extra = '关注留学新青年' if operation == 0 else '关注北美留学生'
-            extra = '邀请用户'+nickname+extra
+            extra = '邀请用户' + nickname + extra
             # 数据库中没有当前用户new币记录则创建
             if not record:
                 NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=user_id, operation=operation, balance=corn,
@@ -61,8 +61,12 @@ class NewCornCompute:
                                                  balance=1 + balance, corn=1,
                                                  extra='每日登陆')
         else:
-            record = NewCornRecord.objects.filter(user_id=user_id).first()
-            balance = record.balance
+            record = NewCornRecord.objects.filter(user_id=user_id)
+            if not record:
+                balance = 0
+            else:
+                record = record.first()
+                balance = record.balance
             corn = 0
             extra = None
             if operation == 1:
