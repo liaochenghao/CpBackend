@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url
 from rest_framework import routers
-from task.views import TaskView, UserTaskView
+from task.views import TaskView, UserTaskView, UserTaskResultView
 
 router = routers.SimpleRouter()
 router.register(r'user_task', UserTaskView)
+router.register(r'user_task_result', UserTaskResultView)
 urlpatterns = router.urls
 
 urlpatterns += [

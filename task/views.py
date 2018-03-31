@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Q
 import uuid
 from rest_framework import mixins, viewsets, serializers
@@ -5,7 +6,7 @@ from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from CpBackend import settings
-from task.models import Task, UserTask, UserTaskResult
+from task.models import Task, UserTask, UserTaskResult, UserTaskImageMapping
 from task.serializer import TaskSerializer, UserTaskSerializer, User, UserTaskResultSerializer
 
 
@@ -22,8 +23,8 @@ class TaskView(APIView):
         task_ids = list()
         for task in all_task:
             task_ids.append(task['id'])
-        user_task_infos = UserTask.objects.filter(Q(user_id=user.get('open_id')) | Q(cp_user_id=user.get('open_id')),
-                                                  task_id__in=task_ids).values('task_id', 'status')
+        user_task_infos = UserTask.objects.filter(Q(user_id=user.get('open_id'), task_id__in=task_ids)).values(
+            'task_id', 'status')
         for task in all_task:
             task['attend'] = False
             for info in user_task_infos:
@@ -35,10 +36,18 @@ class TaskView(APIView):
 
     def post(self, request):
         f1 = request.FILES['image']
-        fname = '%s/upload/task/%s' % (settings.MEDIA_ROOT, f1.name)
+        task_id = request.data.get('task_id')
+        user = request.user_info
+        if not task_id:
+            raise serializers.ValidationError('参数task_id不能为空')
+        rand_name = str(uuid.uuid4()) + f1.name[f1.name.find('.'):]
+        fname = '%s/upload/task/%s' % (settings.MEDIA_ROOT, rand_name)
         with open(fname, 'wb') as pic:
             for c in f1.chunks():
                 pic.write(c)
+        UserTaskImageMapping.objects.create(id=str(uuid.uuid4()), task_id=task_id, user_id=user.get('open_id'),
+                                            image_url='/upload/task/'+rand_name)
+
         return Response()
 
 
@@ -47,19 +56,22 @@ class UserTaskView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
     queryset = UserTask.objects.all()
     serializer_class = UserTaskSerializer
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         param = request.data
         if not param.get('task_id'):
             raise serializers.ValidationError('参数task_id不能为空')
         user = request.user_info
         # 首先判断当前用户是否有CP，如果有CP，则一定查询到2条记录，否则0条记录
-        cp_result = User.objects.filter(
-            Q(cp_user_id=user.get('open_id')) | Q(open_id=user.get('open_id', cp_user_id__isnull=False)))
+        cp_result = User.objects.filter(Q(open_id=user.get('open_id'), cp_user_id__isnull=False))
         if not cp_result:
             raise serializers.ValidationError('当前用户暂无CP信息')
-        cp_user_id = cp_result[0].cp_user_id if cp_result[0].open_id == user.get('open_id') else cp_result[1].open_id
+        cp_user_id = cp_result[0].cp_user_id
+        # 当前用户领取任务后，CP也自动领取任务，故向数据了录入2条记录数据
         UserTask.objects.create(id=str(uuid.uuid4()), task_id=param.get('task_id'), user_id=user.get('open_id'),
                                 cp_user_id=cp_user_id)
+        UserTask.objects.create(id=str(uuid.uuid4()), task_id=param.get('task_id'), user_id=cp_user_id,
+                                cp_user_id=user.get('open_id'))
         return Response("任务领取成功")
 
 
@@ -81,10 +93,12 @@ class UserTaskResultView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixin
     @list_route(methods=['get'])
     def check_cp_task(self, request):
         user = request.user_info
+        task_id = request.query_params.get('task_id')
+        if not task_id:
+            raise serializers.ValidationError('参数task_id不能为空')
         cp_user_ids = User.objects.filter(open_id=user.get('open_id')).value_list('cp_user_id')
         if not cp_user_ids:
             raise serializers.ValidationError('当前用户暂无CP信息')
-        # 在cp列表中，当前用户可能是邀请人也有可能是被邀请人
         cp_user_id = cp_user_ids[0]
-        result = UserTaskResult.objects.filter(cp_user_id=cp_user_id)
+        result = UserTaskResult.objects.filter(user_id=cp_user_id)
         return Response(True if result else False)

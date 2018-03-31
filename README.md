@@ -42,4 +42,8 @@
 - [获取用户CP信息](docs/invitation/cp.md)
 - [其他渠道获取new币](docs/invitation/invitation_code.md)
 - [获取当前用户任务列表信息](docs/task/task_list.md)
+- [用户领取任务](docs/task/accept_task.md)
+- [用户提交任务](docs/task/finish_task.md)
+- [用户提交任务上传图片](docs/task/finish_task_upload.md)
+- [查看CP是否已提交任务](docs/task/accept_task.md)
 
