@@ -122,11 +122,7 @@ class UserTaskImageMappingView(mixins.CreateModelMixin, viewsets.GenericViewSet,
 
     def create(self, request, *args, **kwargs):
         """
-
-        :param request: 
-        :param args: 
-        :param kwargs: 
-        :return: 
+        用户提交任务上传图片
         """
         f1 = request.FILES['image']
         task_id = request.data.get('task_id')
