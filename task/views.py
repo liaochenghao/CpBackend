@@ -77,18 +77,15 @@ class UserTaskView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
         if not param.get('task_id'):
             raise serializers.ValidationError('参数task_id不能为空')
         user = request.user_info
-        # 首先判断当前用户是否有CP，如果有CP，则一定查询到2条记录，否则0条记录
-        cp_result = User.objects.filter(Q(open_id=user.get('open_id'), cp_user_id__isnull=False))
-        if not cp_result:
+        if not user.get('cp_user_id'):
             raise serializers.ValidationError('当前用户暂无CP信息')
-        cp_user_id = cp_result[0].cp_user_id
         is_accept_task = UserTask.objects.filter(user_id=user.get('open_id'), task_id=param.get('task_id'))
         if is_accept_task:
             raise serializers.ValidationError('当前用户或CP好友已领取任务')
         # 当前用户领取任务后，CP也自动领取任务，故向数据了录入2条记录数据
         UserTask.objects.create(id=str(uuid.uuid4()), task_id=param.get('task_id'), user_id=user.get('open_id'),
-                                cp_user_id=cp_user_id)
-        UserTask.objects.create(id=str(uuid.uuid4()), task_id=param.get('task_id'), user_id=cp_user_id,
+                                cp_user_id=user.get('cp_user_id'))
+        UserTask.objects.create(id=str(uuid.uuid4()), task_id=param.get('task_id'), user_id=user.get('cp_user_id'),
                                 cp_user_id=user.get('open_id'))
         return Response("任务领取成功")
 
@@ -101,10 +98,9 @@ class UserTaskResultView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixin
     def create(self, request, *args, **kwargs):
         user = request.user_info
         request.data['user_id'] = user.get('open_id')
-        cp_user_ids = User.objects.filter(open_id=user.get('open_id')).value_list('cp_user_id')
-        if not cp_user_ids:
+        if not user.get('cp_user_id'):
             raise serializers.ValidationError('当前用户暂无CP信息')
-        request.data['cp_user_id'] = cp_user_ids[0]
+        request.data['cp_user_id'] = user.get('cp_user_id')
         super().create(request, *args, **kwargs)
         return Response()
 
@@ -114,11 +110,9 @@ class UserTaskResultView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixin
         task_id = request.query_params.get('task_id')
         if not task_id:
             raise serializers.ValidationError('参数task_id不能为空')
-        cp_user_ids = User.objects.filter(open_id=user.get('open_id')).value_list('cp_user_id')
-        if not cp_user_ids:
+        if not user.get('cp_user_id'):
             raise serializers.ValidationError('当前用户暂无CP信息')
-        cp_user_id = cp_user_ids[0]
-        result = UserTaskResult.objects.filter(user_id=cp_user_id)
+        result = UserTaskResult.objects.filter(user_id=user.get('cp_user_id'))
         return Response(True if result else False)
 
 

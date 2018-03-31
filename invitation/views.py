@@ -5,11 +5,13 @@ from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from authentication.models import User
+from authentication.serializers import UserSerializer
 from common.ComputeNewCorn import NewCornCompute
 from invitation.models import Invitation
 from invitation.serializer import InvitationSerializer
 import logging
 from common.execute_sql import execute_custom_sql
+from redis_tool.redis_server import redis_client
 from register.models import RegisterInfo
 from register.serializer import RegisterInfoSerializer
 
@@ -79,8 +81,11 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             NewCornCompute.compute_new_corn(user.get('open_id'), 5)
             # 同时更新User，将当前用户与inviter的cp_user_id进行更新
             now = datetime.datetime.now()
-            User.objects.filter(open_id=user.get('open_id')).update(cp_user_id=inviter, cp_time=now)
-            User.objects.filter(open_id=inviter).update(cp_user_id=user.get('open_id'), cp_time=now)
+            current_user = User.objects.filter(open_id=user.get('open_id')).update(cp_user_id=inviter, cp_time=now)
+            current_user_cp = User.objects.filter(open_id=inviter).update(cp_user_id=user.get('open_id'), cp_time=now)
+            # 同时更新缓存中用户信息
+            redis_client.set_instance(current_user.open_id, UserSerializer(current_user).data)
+            redis_client.set_instance(current_user_cp.open_id, UserSerializer(current_user_cp).data)
         return Response()
 
     @list_route(methods=['get'])
