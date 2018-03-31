@@ -68,6 +68,6 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         if record:
             result['balance'] = record[0].balance
         result['avatar_url'] = user.get('avatar_url')
-        result['sex'] = register_info[0].sex
+        result['sex'] = user.get('gender')
         result['code'] = user.get('code')
         return Response(result)
