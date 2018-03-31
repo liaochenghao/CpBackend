@@ -25,6 +25,7 @@ class TicketAuthorize:
             else:
                 ticket = res_ticket
                 expire_time = ticket['expired_time'][: ticket['expired_time'].find('.')]
+                expire_time = expire_time.replace('T', ' ')
                 if datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S') > datetime.datetime.now():
                     valid_ticket = True
                     user_id = ticket['user']['id']
