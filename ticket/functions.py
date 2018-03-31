@@ -3,6 +3,9 @@ import datetime
 from secrets import token_hex
 from redis_tool.redis_server import redis_client
 from ticket.sql import ticket_sql
+import logging
+
+logger = logging.getLogger('django')
 
 
 class TicketAuthorize:
@@ -21,7 +24,8 @@ class TicketAuthorize:
                 err_msg = 'ticket不存在'
             else:
                 ticket = res_ticket
-                if datetime.datetime.strptime(ticket['expired_time'], '%Y-%m-%dT%H:%M:%S') > datetime.datetime.now():
+                expire_time = ticket['expired_time'][: ticket['expired_time'].find('.')]
+                if datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S') > datetime.datetime.now():
                     valid_ticket = True
                     user_id = ticket['user']['id']
                     err_msg = None
