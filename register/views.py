@@ -76,6 +76,8 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
     @list_route()
     def random(self, request):
         user_info = request.user_info
+        if request.query_params.get('auto') == 'True':
+            NewCornCompute.compute_new_corn(user_info.get('open_id'), NewCornType.SWITCH_USER.value)
         # 首先查询邀请数据表，找到已经邀请的用户的编号
         id_list = Invitation.objects.filter(inviter=user_info['open_id']).values_list('invitee')
         logger.info('RegisterInfoView random id_list: %s' % list(id_list))
@@ -91,8 +93,6 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
             raise exceptions.ValidationError('暂无匹配用户信息')
         logger.info('随机获取到的用户ID= %s' % result[0].user_id)
         user = User.objects.filter(open_id=result[0].user_id).first()
-        if request.query_params.get('auto') == 'True':
-            NewCornCompute.compute_new_corn(user_info.get('open_id'), NewCornType.SWITCH_USER.value)
         data = RegisterInfoSerializer(result[0]).data
         data['avatar_url'] = user.avatar_url
         data['age'] = datetime.datetime.now().year - int(data['birthday'][:4])
