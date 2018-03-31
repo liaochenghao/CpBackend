@@ -18,6 +18,7 @@ class WxInterface:
         self.secret = WX_SMART_CONFIG['secret']
 
     def code_authorize(self, code):
+        logger.info('=====================================================================code_authorize')
         url = "https://api.weixin.qq.com/sns/jscode2session"
         params = {
             'appid': self.appid,
@@ -46,6 +47,7 @@ class WxInterface:
                 user.last_login = datetime.datetime.now()
                 user.save()
             ticket = TicketAuthorize.create_ticket(res['openid'])
+            logger.info('=====================================================================create ticket')
             return {'user_id': user.open_id, 'ticket': ticket}
         else:
             logger.info('微信认证异常 code_authorize response: %s' % response.text)
