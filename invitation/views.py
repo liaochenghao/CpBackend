@@ -87,7 +87,7 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
     def cp(self, request):
         user = request.user_info
         cp_result = User.objects.filter(
-            Q(cp_user_id=user.get('open_id')) | Q(open_id=user.get('open_id', cp_user_id__isnull=False)))
+            Q(cp_user_id=user.get('open_id')) | Q(open_id=user.get('open_id'), cp_user_id__isnull=False))
         if not cp_result:
             raise serializers.ValidationError('当前用户暂无CP信息')
         # 在cp列表中，当前用户可能是邀请人也有可能是被邀请人
