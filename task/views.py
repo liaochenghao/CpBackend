@@ -100,6 +100,7 @@ class UserTaskResultView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixin
         if not user.get('cp_user_id'):
             raise serializers.ValidationError('当前用户暂无CP信息')
         request.data['cp_user_id'] = user.get('cp_user_id')
+        request.data['id'] = str(uuid.uuid4())
         super().create(request, *args, **kwargs)
         return Response()
 
