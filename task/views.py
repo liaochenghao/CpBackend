@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from CpBackend import settings
 from task.models import Task, UserTask, UserTaskResult, UserTaskImageMapping
-from task.serializer import TaskSerializer, UserTaskSerializer, User, UserTaskResultSerializer
+from task.serializer import TaskSerializer, UserTaskSerializer, UserTaskResultSerializer
 
 
 class TaskView(APIView):
