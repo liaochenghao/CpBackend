@@ -130,8 +130,9 @@ class UserTaskImageMappingView(mixins.CreateModelMixin, viewsets.GenericViewSet,
         user = request.user_info
         if not task_id:
             raise serializers.ValidationError('参数task_id不能为空')
-        rand_name = str(uuid.uuid4()) + f1.name[f1.name.find('.'):]
         print('=----------------------------------')
+        rand_name = str(uuid.uuid4()) + f1.name[f1.name.find('.'):]
+        print(f1.name[f1.name.find('.'):])
         print(rand_name)
         print('=----------------------------------')
         fname = '%s/upload/task/%s' % (settings.MEDIA_ROOT, rand_name)
@@ -140,4 +141,4 @@ class UserTaskImageMappingView(mixins.CreateModelMixin, viewsets.GenericViewSet,
                 pic.write(c)
         UserTaskImageMapping.objects.create(id=str(uuid.uuid4()), task_id=task_id, user_id=user.get('open_id'),
                                             image_url='/upload/task/' + rand_name)
-        return Response()
+        return Response("ok")
