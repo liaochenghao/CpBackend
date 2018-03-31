@@ -52,7 +52,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         """
         logger.info('============================================')
         logger.info(birthday)
-        temp = datetime.datetime.strptime(birthday, "%Y-%m-%d")
+        temp = datetime.datetime.strptime(birthday, "%Y-%m-%d %H:%M:%S")
         day = temp.day
         month = temp.month
         dates = (21, 20, 21, 21, 22, 22, 23, 24, 24, 24, 23, 22)
