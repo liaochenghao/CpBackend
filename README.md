@@ -45,5 +45,5 @@
 - [用户领取任务](docs/task/accept_task.md)
 - [用户提交任务](docs/task/finish_task.md)
 - [用户提交任务上传图片](docs/task/finish_task_upload.md)
-- [查看CP是否已提交任务](docs/task/accept_task.md)
+- [查看CP是否已提交任务](docs/task/check_cp_result.md)
 
