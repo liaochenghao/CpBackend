@@ -1,8 +1,5 @@
 from django.db import models
 
-# Create your models here.
-from authentication.models import User
-
 
 class Task(models.Model):
     id = models.CharField('序列号', max_length=64, primary_key=True)

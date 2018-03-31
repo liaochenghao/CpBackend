@@ -67,6 +67,9 @@ class UserTaskView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
         if not cp_result:
             raise serializers.ValidationError('当前用户暂无CP信息')
         cp_user_id = cp_result[0].cp_user_id
+        is_accept_task = UserTask.objects.filter(user_id=user.get('open_id'), task_id=param.get('task_id'))
+        if is_accept_task:
+            raise serializers.ValidationError('当前用户或CP好友已领取任务')
         # 当前用户领取任务后，CP也自动领取任务，故向数据了录入2条记录数据
         UserTask.objects.create(id=str(uuid.uuid4()), task_id=param.get('task_id'), user_id=user.get('open_id'),
                                 cp_user_id=cp_user_id)
