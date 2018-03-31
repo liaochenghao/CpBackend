@@ -14,6 +14,7 @@ from redis_tool.redis_server import redis_client
 from register.models import RegisterInfo
 from register.serializer import RegisterInfoSerializer
 from common.NewCornType import NewCornType
+
 logger = logging.getLogger('django')
 
 
@@ -80,8 +81,14 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             NewCornCompute.compute_new_corn(user.get('open_id'), NewCornType.ACCEPT_INVITATION.value)
             # 同时更新User，将当前用户与inviter的cp_user_id进行更新
             now = datetime.datetime.now()
-            current_user = User.objects.filter(open_id=user.get('open_id')).update(cp_user_id=inviter, cp_time=now)
-            current_user_cp = User.objects.filter(open_id=inviter).update(cp_user_id=user.get('open_id'), cp_time=now)
+            current_user = User.objects.get(open_id=user.get('open_id'))
+            current_user.cp_user_id = inviter
+            current_user.cp_time = now
+            current_user.save()
+            current_user_cp = User.objects.get(open_id=inviter)
+            current_user_cp.cp_user_id=user.get('open_id')
+            current_user_cp.cp_time=now
+            current_user_cp.save()
             # 同时更新缓存中用户信息
             redis_client.set_instance(current_user.open_id, UserSerializer(current_user).data)
             redis_client.set_instance(current_user_cp.open_id, UserSerializer(current_user_cp).data)
