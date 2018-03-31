@@ -50,8 +50,6 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         :param birthday: 
         :return: 
         """
-        logger.info('============================================')
-        logger.info(birthday)
         temp = datetime.datetime.strptime(birthday, "%Y-%m-%d %H:%M:%S")
         day = temp.day
         month = temp.month
