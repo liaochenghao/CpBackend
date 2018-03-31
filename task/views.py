@@ -5,7 +5,6 @@ from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from CpBackend import settings
-from authentication.models import User
 from task.models import Task, UserTask, UserTaskResult, UserTaskImageMapping
 from task.serializer import TaskSerializer, UserTaskSerializer, UserTaskResultSerializer, UserTaskImageMappingSerializer
 
