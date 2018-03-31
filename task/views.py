@@ -4,14 +4,18 @@ import uuid
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from CpBackend import settings
+from authentication.models import User
 from task.models import Task, UserTask, UserTaskResult, UserTaskImageMapping
-from task.serializer import TaskSerializer, UserTaskSerializer, UserTaskResultSerializer
+from task.serializer import TaskSerializer, UserTaskSerializer, UserTaskResultSerializer, UserTaskImageMappingSerializer
 
 
-class TaskView(APIView):
-    def get(self, request):
+class TaskView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
+               mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
+    def list(self, request, *args, **kwargs):
         """
         获取当前用户任务列表
         :param request: 
@@ -34,20 +38,31 @@ class TaskView(APIView):
                     break
         return Response(all_task)
 
-    def post(self, request):
-        f1 = request.FILES['image']
-        task_id = request.data.get('task_id')
-        user = request.user_info
-        if not task_id:
-            raise serializers.ValidationError('参数task_id不能为空')
-        rand_name = str(uuid.uuid4()) + f1.name[f1.name.find('.'):]
-        fname = '%s/upload/task/%s' % (settings.MEDIA_ROOT, rand_name)
-        with open(fname, 'wb') as pic:
-            for c in f1.chunks():
-                pic.write(c)
-        UserTaskImageMapping.objects.create(id=str(uuid.uuid4()), task_id=task_id, user_id=user.get('open_id'),
-                                            image_url='/upload/task/'+rand_name)
+    def retrieve(self, request, *args, **kwargs):
+        """
+        获取任务详情
+        :param request: 
+        :param args: 
+        :param kwargs: 
+        :return: 
+        """
+        task_id = kwargs.get('pk')
+        task_result = Task.objects.filter(id=task_id)
+        if not task_result:
+            raise serializers.ValidationError('未查询到当前活动信息')
+        data = TaskSerializer(task_result[0]).data
+        return Response(data)
 
+    def create(self, request, *args, **kwargs):
+        """
+        创建活动
+        :param request: 
+        :param args: 
+        :param kwargs: 
+        :return: 
+        """
+        request.data['id'] = str(uuid.uuid4())
+        super().create(request, *args, **kwargs)
         return Response()
 
 
@@ -105,3 +120,31 @@ class UserTaskResultView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixin
         cp_user_id = cp_user_ids[0]
         result = UserTaskResult.objects.filter(user_id=cp_user_id)
         return Response(True if result else False)
+
+
+class UserTaskImageMappingView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
+                               mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
+    queryset = UserTaskImageMapping.objects.all()
+    serializer_class = UserTaskImageMappingSerializer
+
+    def create(self, request, *args, **kwargs):
+        """
+
+        :param request: 
+        :param args: 
+        :param kwargs: 
+        :return: 
+        """
+        f1 = request.FILES['image']
+        task_id = request.data.get('task_id')
+        user = request.user_info
+        if not task_id:
+            raise serializers.ValidationError('参数task_id不能为空')
+        rand_name = str(uuid.uuid4()) + f1.name[f1.name.find('.'):]
+        fname = '%s/upload/task/%s' % (settings.MEDIA_ROOT, rand_name)
+        with open(fname, 'wb') as pic:
+            for c in f1.chunks():
+                pic.write(c)
+        UserTaskImageMapping.objects.create(id=str(uuid.uuid4()), task_id=task_id, user_id=user.get('open_id'),
+                                            image_url='/upload/task/' + rand_name)
+        return Response()

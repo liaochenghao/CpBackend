@@ -1,15 +1,15 @@
-### 用户提交任务上传图片
+### 添加任务
 
 **请求地址**:
 ```
-    POST     api/v1/user_task_result_image/
+    POST     api/v1/task/
 ```
 
 **请求参数**:
 ```
     {
-        "task_id": "任务编号",
-        "image": "图片名称"
+        "name":"test_activity",
+        "content":"123123"
     }
 ```
 
@@ -18,9 +18,7 @@
 {
     "code": 0,
     "msg": "请求成功",
-    "data": {
-    
-    },
+    "data": {},
     "field_name": ""
 }
 ```

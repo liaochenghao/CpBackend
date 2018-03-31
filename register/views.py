@@ -4,7 +4,6 @@ import datetime
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, exceptions
 from rest_framework.decorators import list_route, detail_route
-
 from authentication.models import User
 from register.models import RegisterInfo, Register, NewCornRecord
 from register.serializer import RegisterInfoSerializer, RegisterSerializer, NewCornRecordSerializer

@@ -13,15 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url
 from rest_framework import routers
-from task.views import TaskView, UserTaskView, UserTaskResultView
+from task.views import TaskView, UserTaskView, UserTaskResultView, UserTaskImageMappingView
 
 router = routers.SimpleRouter()
+router.register(r'task', TaskView)
 router.register(r'user_task', UserTaskView)
 router.register(r'user_task_result', UserTaskResultView)
+router.register(r'user_task_result_image', UserTaskImageMappingView)
 urlpatterns = router.urls
-
-urlpatterns += [
-    url(r'^task', TaskView.as_view()),
-]
