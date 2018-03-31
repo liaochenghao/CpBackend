@@ -131,6 +131,7 @@ class UserTaskImageMappingView(mixins.CreateModelMixin, viewsets.GenericViewSet,
         if not task_id:
             raise serializers.ValidationError('参数task_id不能为空')
         print('=----------------------------------')
+        print(f1.name)
         rand_name = str(uuid.uuid4()) + f1.name[f1.name.find('.'):]
         print(f1.name[f1.name.find('.'):])
         print(rand_name)
