@@ -3,7 +3,7 @@ import uuid
 
 import datetime
 from rest_framework import serializers
-from invitation.models import Invitation
+from invitation.models import Invitation, UserRecord
 
 
 class InvitationSerializer(serializers.ModelSerializer):
@@ -19,3 +19,10 @@ class InvitationSerializer(serializers.ModelSerializer):
         validated_data['expire_at'] = validated_data['create_time'] + datetime.timedelta(days=1)
         validated_data['status'] = 0
         return super().create(validated_data)
+
+
+class UserRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserRecord
+        fields = ['id', 'user_id', 'view_user_id', 'create_at', 'invite_status', 'invite_expire_at']
+        read_only_fields = ['id']

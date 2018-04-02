@@ -18,3 +18,20 @@ class Invitation(models.Model):
 
     class Meta:
         db_table = "invitation"
+
+
+class UserRecord(models.Model):
+    STATUS = (
+        (0, '有效'),
+        (1, '成功'),
+        (2, '无效')
+    )
+    id = models.AutoField('序列号', primary_key=True)
+    user_id = models.CharField('用户编号', max_length=64)
+    view_user_id = models.CharField('已查看的用户编号', max_length=64)
+    create_at = models.DateTimeField('创建时间', auto_now_add=True, null=True)
+    invite_status = models.IntegerField('邀请状态', choices=STATUS)
+    invite_expire_at = models.DateTimeField('过期时间', null=True)
+
+    class Meta:
+        db_table = "user_record"

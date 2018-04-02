@@ -56,7 +56,6 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
             user_info.avatar_url = params.get('avatar_url')
             user_info.language = params.get('language')
             user_info.save()
-            logger.info('888888888888888888888888888888888888888888')
             temp = UserSerializer(user_info).data
             logger.info('Update User from Redis')
             logger.info(temp)
