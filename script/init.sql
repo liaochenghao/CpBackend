@@ -29,7 +29,7 @@ INSERT INTO `cp_backend`.`register_info` (	`id`,	`nickname`,	`sex`,	`birthday`,	
 	('1111112',	'Jack',	'1',	'2013-08-12 00:00:00.000000',	'狮子座',	'0',
 		'0',	'556688',	'13476023898',	'武汉',	'新加坡','新加坡国立大学',
 		'同城',	'0',	'博士',	'2018-03-29 09:10:05.298394',	'2018-03-29 09:10:05.298432',
-		'111',	'http://pic.qqtn.com/up/2017-12/15129608564581373.jpg',
+		'333',	'http://pic.qqtn.com/up/2017-12/15129608564581373.jpg',
 		NULL
 	);
 
@@ -37,7 +37,7 @@ INSERT INTO `cp_backend`.`register_info` (	`id`,	`nickname`,	`sex`,	`birthday`,	
 	('1111113',	'阿三哥',	'1',	'2013-08-12 00:00:00.000000',	'狮子座',	'0',
 		'0',	'556688',	'13476023898',	'武汉',	'新加坡','新加坡国立大学',
 		'同城',	'0',	'博士',	'2018-03-29 09:10:05.298394',	'2018-03-29 09:10:05.298432',
-		'222',	'http://img.duoziwang.com/2016/12/23/041142110552.jpg',
+		'444',	'http://img.duoziwang.com/2016/12/23/041142110552.jpg',
 		NULL
 	);
 INSERT INTO `cp_backend`.`register_info` (	`id`,	`nickname`,	`sex`,	`birthday`,	`constellation`,	`sexual_orientation`,	`overseas_study_status`,	`wechat`,	`phone_number`,	`hometown`,	`future_city`,	`future_school`,	`demand_area`,	`demand_cp_age`,	`degree`,	`create_at`,	`update_at`,	`user_id`,	`avatar_url`,	`invite_code`)VALUES
@@ -51,27 +51,34 @@ INSERT INTO `cp_backend`.`register_info` (	`id`,	`nickname`,	`sex`,	`birthday`,	
 	('1111115',	'叫爸爸',	'0',	'2013-08-12 00:00:00.000000',	'狮子座',	'0',
 		'0',	'556688',	'13476023898',	'武汉',	'新加坡','新加坡国立大学',
 		'同城',	'0',	'博士',	'2018-03-29 09:10:05.298394',	'2018-03-29 09:10:05.298432',
-		'555',	'http://c.hiphotos.baidu.com/zhidao/pic/item/b219ebc4b74543a9f0894bc216178a82b9011429.jpg',
+		'666',	'http://c.hiphotos.baidu.com/zhidao/pic/item/b219ebc4b74543a9f0894bc216178a82b9011429.jpg',
 		NULL
 	);
 INSERT INTO `cp_backend`.`register_info` (	`id`,	`nickname`,	`sex`,	`birthday`,	`constellation`,	`sexual_orientation`,	`overseas_study_status`,	`wechat`,	`phone_number`,	`hometown`,	`future_city`,	`future_school`,	`demand_area`,	`demand_cp_age`,	`degree`,	`create_at`,	`update_at`,	`user_id`,	`avatar_url`,	`invite_code`)VALUES
 	('1111116',	'你大爷',	'0',	'2013-08-12 00:00:00.000000',	'狮子座',	'0',
 		'0',	'556688',	'13476023898',	'武汉',	'新加坡','新加坡国立大学',
 		'同城',	'0',	'博士',	'2018-03-29 09:10:05.298394',	'2018-03-29 09:10:05.298432',
-		'666',	'http://img4.imgtn.bdimg.com/it/u=1812350361,2874683627&fm=27&gp=0.jpg',
+		'777',	'http://img4.imgtn.bdimg.com/it/u=1812350361,2874683627&fm=27&gp=0.jpg',
 		NULL
 	);
 INSERT INTO `cp_backend`.`register_info` (	`id`,	`nickname`,	`sex`,	`birthday`,	`constellation`,	`sexual_orientation`,	`overseas_study_status`,	`wechat`,	`phone_number`,	`hometown`,	`future_city`,	`future_school`,	`demand_area`,	`demand_cp_age`,	`degree`,	`create_at`,	`update_at`,	`user_id`,	`avatar_url`,	`invite_code`)VALUES
 	('1111117',	'请叫我局长',	'0',	'2013-08-12 00:00:00.000000',	'狮子座',	'0',
 		'0',	'556688',	'13476023898',	'武汉',	'新加坡','新加坡国立大学',
 		'同城',	'0',	'博士',	'2018-03-29 09:10:05.298394',	'2018-03-29 09:10:05.298432',
-		'777',	'http://img.besoo.com/file/201705/07/0826409945908.jpg',
+		'888',	'http://img.besoo.com/file/201705/07/0826409945908.jpg',
 		NULL
 	);
 INSERT INTO `cp_backend`.`register_info` (	`id`,	`nickname`,	`sex`,	`birthday`,	`constellation`,	`sexual_orientation`,	`overseas_study_status`,	`wechat`,	`phone_number`,	`hometown`,	`future_city`,	`future_school`,	`demand_area`,	`demand_cp_age`,	`degree`,	`create_at`,	`update_at`,	`user_id`,	`avatar_url`,	`invite_code`)VALUES
 	('1111118',	'买买提',	'0',	'2013-08-12 00:00:00.000000',	'狮子座',	'0',
 		'0',	'556688',	'13476023898',	'武汉',	'新加坡','新加坡国立大学',
 		'同城',	'0',	'博士',	'2018-03-29 09:10:05.298394',	'2018-03-29 09:10:05.298432',
-		'888',	'http://img0.imgtn.bdimg.com/it/u=224644758,621543504&fm=27&gp=0.jpg',
+		'999',	'http://img0.imgtn.bdimg.com/it/u=224644758,621543504&fm=27&gp=0.jpg',
+		NULL
+	);
+INSERT INTO `cp_backend`.`register_info` (	`id`,	`nickname`,	`sex`,	`birthday`,	`constellation`,	`sexual_orientation`,	`overseas_study_status`,	`wechat`,	`phone_number`,	`hometown`,	`future_city`,	`future_school`,	`demand_area`,	`demand_cp_age`,	`degree`,	`create_at`,	`update_at`,	`user_id`,	`avatar_url`,	`invite_code`)VALUES
+	('3111118',	'自然醒',	'0',	'2013-08-12 00:00:00.000000',	'狮子座',	'0',
+		'0',	'556688',	'13476023898',	'武汉',	'新加坡','新加坡国立大学',
+		'同城',	'0',	'博士',	'2018-03-29 09:10:05.298394',	'2018-03-29 09:10:05.298432',
+		'1000',	'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKtqsC0CG8vlOA5oK9lTuNMZeDgE76IXYznoAlWnxcKpXPApSt6UR4jqnHGFic9ic5dCMhW85A15Eog/132',
 		NULL
 	);
