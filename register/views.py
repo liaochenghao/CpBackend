@@ -27,6 +27,9 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         user = request.user_info
+        logger.info('--------------------------------------------------------')
+        logger.info(user)
+        logger.info('--------------------------------------------------------')
         # 查看当前用户是否已经注册过信息
         record = RegisterInfo.objects.filter(user_id=request.data.get('user'))
         if record:
@@ -36,6 +39,9 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         request.data['user'] = user.get('open_id')
         request.data['constellation'] = self._get_constellations(request.data['birthday'])
         request.data['avatar_url'] = user.get('avatar_url')
+        logger.info('--------------------------------------------------------')
+        logger.info(request.data)
+        logger.info('--------------------------------------------------------')
         super().create(request, *args, **kwargs)
         # 报名指定的活动
         Register.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
