@@ -1,6 +1,8 @@
 from django.db import transaction
 from django.db.models import Q
 import uuid
+
+from django.http import HttpResponse
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
@@ -137,4 +139,4 @@ class UserTaskImageMappingView(mixins.CreateModelMixin, viewsets.GenericViewSet,
                 pic.write(c)
         UserTaskImageMapping.objects.create(id=str(uuid.uuid4()), task_id=task_id, user_id=user.get('open_id'),
                                             image_url='/upload/task/' + rand_name)
-        return Response("ok")
+        return HttpResponse("ok")
