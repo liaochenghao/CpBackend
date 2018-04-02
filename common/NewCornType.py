@@ -18,4 +18,6 @@ class NewCornType(Enum):
     ACCEPT_INVITATION = 5
     # 切换用户
     SWITCH_USER = 6
+    # 邀请用户报名
+    INVITE_USERS_ATTEND = 7
 

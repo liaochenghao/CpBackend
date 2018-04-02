@@ -94,6 +94,10 @@ class NewCornCompute:
                     raise exceptions.ValidationError('账户余额不足')
                 balance -= corn
                 extra = '切换用户'
+            elif operation == 7:
+                extra = '邀请用户报名'
+                corn = 2
+                balance += corn
             NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=user_id, operation=operation, balance=balance,
                                          corn=corn, extra=extra)
         return "success"

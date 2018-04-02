@@ -42,6 +42,10 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
                                 activity_id=request.data.get('activity'))
         # 给新用户添加New币
         NewCornCompute.compute_new_corn(user.get('open_id'), NewCornType.ATTEND_ACTIVITY.value)
+        if request.data['invite_code']:
+            inviter = User.objects.filter(code=request.data['invite_code'])
+            if inviter:
+                NewCornCompute.compute_new_corn(inviter[0].open_id, NewCornType.INVITE_USERS_ATTEND.value)
         return Response()
 
     def _get_constellations(self, birthday):
