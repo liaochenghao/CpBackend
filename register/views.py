@@ -39,9 +39,9 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         request.data['user'] = user.get('open_id')
         request.data['constellation'] = self._get_constellations(request.data['birthday'])
         request.data['avatar_url'] = user.get('avatar_url')
-        logger.info('--------------------------------------------------------')
+        logger.info('--------------------------------------------------------999')
         logger.info(request.data)
-        logger.info('--------------------------------------------------------')
+        logger.info('--------------------------------------------------------999')
         super().create(request, *args, **kwargs)
         # 报名指定的活动
         Register.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
