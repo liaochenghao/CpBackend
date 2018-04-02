@@ -78,6 +78,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         return queryset
 
     @list_route()
+    @transaction.atomic
     def random(self, request):
         user_info = request.user_info
         if request.query_params.get('auto') == 'True':

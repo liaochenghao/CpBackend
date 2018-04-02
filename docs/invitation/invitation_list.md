@@ -8,8 +8,11 @@
 **请求参数**:
 ```
     {
-        "inviter": str  邀请人编号,
+        "inviter": str  邀请人编号,      
         "invitee": str  被邀请人编号
+        
+        说明：inviter和invitee参数均传递当前用户编号，当传递inviter=user_id时，就是查询
+        我邀请的用户列表，当传递invitee=user_id时，就是查询邀请我的用户列表
     }
 ```
 
