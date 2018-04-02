@@ -10,6 +10,7 @@ from register.models import RegisterInfo, NewCornRecord
 from utils.weixin_functions import WxInterfaceUtil
 import logging
 from common.NewCornType import NewCornType
+from redis_tool.redis_server import redis_client
 logger = logging.getLogger('django')
 
 
@@ -55,6 +56,11 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
             user_info.avatar_url = params.get('avatar_url')
             user_info.language = params.get('language')
             user_info.save()
+            logger.info('888888888888888888888888888888888888888888')
+            temp = UserSerializer(user_info).data
+            logger.info('Update User from Redis')
+            logger.info(temp)
+            redis_client.set_instance(user_info.open_id, temp)
         return Response()
 
     @list_route(['get'])
