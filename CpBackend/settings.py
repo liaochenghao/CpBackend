@@ -182,7 +182,6 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 WX_SMART_CONFIG = {
     'appid': 'wx8876efe53e30197f',
     'secret': '4679e341aec53b79ba55ed7a7c26fe28'
@@ -194,4 +193,4 @@ REDIS_CONFIG = {
     'port': 6379
 }
 
-ignore_auth_urls = ['/api/v1/user/authorize/', 'api/v1/invitation/code/']
+ignore_auth_urls = ['/api/v1/user/authorize/', 'api/v1/invitation/code/', 'api/v1/user/check_account/']
