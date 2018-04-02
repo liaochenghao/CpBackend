@@ -28,10 +28,10 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
         invitee = self.request.query_params.get('invitee')
         if inviter:
             sql = """SELECT invitation.*, register_info.nickname,register_info.avatar_url,register_info.sex FROM 
-invitation LEFT JOIN register_info C ON invitation.invitee = register_info.user_id WHERE invitation.inviter = '%s'""" % inviter
+invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_id WHERE invitation.inviter = '%s'""" % inviter
         if invitee:
             sql = """SELECT invitation.*, register_info.nickname,register_info.avatar_url,register_info.sex FROM 
-            invitation LEFT JOIN register_info C ON invitation.inviter = register_info.user_id WHERE invitation.invitee = '%s'""" % invitee
+            invitation LEFT JOIN register_info ON invitation.inviter = register_info.user_id WHERE invitation.invitee = '%s'""" % invitee
         datas = execute_custom_sql(sql)
         logger.info(datas)
         result = self._wrapper_data(datas)
