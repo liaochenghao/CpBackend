@@ -40,7 +40,7 @@ class RegisterInfo(models.Model):
     avatar_url = models.CharField('用户微信头像地址', max_length=255, null=True)
     create_at = models.DateTimeField('注册时间', auto_now_add=True, null=True)
     update_at = models.DateTimeField('修改时间', auto_now=True, null=True)
-    invite_code = models.DateTimeField('邀请码', max_length=16, null=True)
+    invite_code = models.CharField('邀请码', max_length=16, null=True)
 
     class Meta:
         db_table = "register_info"
