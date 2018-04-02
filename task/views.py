@@ -139,4 +139,4 @@ class UserTaskImageMappingView(mixins.CreateModelMixin, viewsets.GenericViewSet,
                 pic.write(c)
         UserTaskImageMapping.objects.create(id=str(uuid.uuid4()), task_id=task_id, user_id=user.get('open_id'),
                                             image_url='/upload/task/' + rand_name)
-        return HttpResponse("ok")
+        return HttpResponse({'code': 0, 'data': 'success'})
