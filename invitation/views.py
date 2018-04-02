@@ -144,12 +144,12 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
             data_temp['total'] = temp_dict.get(temp.user_id)
             data_temp['user_id'] = temp.user_id
             result.append(data_temp)
-        temp = Invitation.objects.filter(inviter=user.get('open_id'), invitee__in=id_list, status=0).values('invitee')
+        temp = Invitation.objects.filter(inviter=user.get('open_id'), invitee__in=id_list, status=0).values_list('invitee')
+        invite_list = list()
+        for basic in temp:
+            invite_list.append(list(basic)[0])
         for info in result:
-            info['invite'] = 1 if info['user_id'] in list(temp) else 0
-        logger.info('000000000000000000000000000000000000000000')
-        logger.info(result)
-        logger.info('000000000000000000000000000000000000000000')
+            info['invite'] = 1 if info['user_id'] in invite_list else 0
         return Response(result)
 
     @list_route(methods=['get'])
