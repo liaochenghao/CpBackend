@@ -86,8 +86,8 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
             current_user.cp_time = now
             current_user.save()
             current_user_cp = User.objects.get(open_id=inviter)
-            current_user_cp.cp_user_id=user.get('open_id')
-            current_user_cp.cp_time=now
+            current_user_cp.cp_user_id = user.get('open_id')
+            current_user_cp.cp_time = now
             current_user_cp.save()
             # 同时更新缓存中用户信息
             redis_client.set_instance(current_user.open_id, UserSerializer(current_user).data)
@@ -151,7 +151,10 @@ class InvitationView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.Li
 
     @list_route(methods=['get'])
     def code(self, request):
+        logger.info('*' * 80)
         params = request.query_params
+        logger.info(params)
+        logger.info('*' * 80)
         # 获取邀请码
         code = params.get('code')
         # 获取邀请类型
