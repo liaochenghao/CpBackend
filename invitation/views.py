@@ -65,6 +65,7 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
         super().create(request, *args, **kwargs)
         # 发送邀请之后要修改用户记录表中数据
         user_record = UserRecord.objects.filter(user_id=user.get('open_id'), view_user_id=params.get('invitee'))
+        user_record[0].invite_status = 0
         user_record[0].invite_expire_at = request.data['expire_at']
         user_record[0].invite_at = request.data['create_time']
         user_record[0].save()
