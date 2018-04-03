@@ -28,9 +28,6 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         user = request.user_info
-        logger.info('--------------------------------------------------------')
-        logger.info(user)
-        logger.info('--------------------------------------------------------')
         # 查看当前用户是否已经注册过信息
         record = RegisterInfo.objects.filter(user_id=request.data.get('user'))
         if record:
@@ -40,9 +37,6 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         request.data['user'] = user.get('open_id')
         request.data['constellation'] = self._get_constellations(request.data['birthday'])
         request.data['avatar_url'] = user.get('avatar_url')
-        logger.info('--------------------------------------------------------999')
-        logger.info(request.data)
-        logger.info('--------------------------------------------------------999')
         super().create(request, *args, **kwargs)
         # 报名指定的活动
         Register.objects.create(id=str(uuid.uuid4()), user_id=request.data.get('user'),
@@ -61,6 +55,8 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         :param birthday: 
         :return: 
         """
+        if not birthday:
+            raise exceptions.ValidationError('生日信息不能为空')
         temp = datetime.datetime.strptime(birthday, "%Y-%m-%d %H:%M:%S")
         day = temp.day
         month = temp.month
@@ -112,7 +108,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         user = User.objects.filter(open_id=result[0].user_id).first()
         data = RegisterInfoSerializer(result[0]).data
         # 获取到随机用户之后，应将当前用户放入查看记录表user_record中
-        UserRecord.objects.create(user_id=user_info['open_id'], view_user_id=data.get('user'), invite_status=0)
+        UserRecord.objects.create(user_id=user_info['open_id'], view_user_id=data.get('user'))
         data['avatar_url'] = user.avatar_url
         data['age'] = datetime.datetime.now().year - int(data['birthday'][:4])
         data['sex'] = '男' if data['sex'] == 1 else '女'
