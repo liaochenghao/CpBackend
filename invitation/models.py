@@ -22,6 +22,7 @@ class Invitation(models.Model):
 
 class UserRecord(models.Model):
     STATUS = (
+        (0, '未邀请'),
         (0, '有效'),
         (1, '成功'),
         (2, '无效')
@@ -30,7 +31,7 @@ class UserRecord(models.Model):
     user_id = models.CharField('用户编号', max_length=64)
     view_user_id = models.CharField('已查看的用户编号', max_length=64)
     create_at = models.DateTimeField('创建时间', auto_now_add=True, null=True)
-    invite_status = models.IntegerField('邀请状态', choices=STATUS, null=True, default=0)
+    invite_status = models.IntegerField('邀请状态', choices=STATUS, null=True, default=-1)
     invite_expire_at = models.DateTimeField('过期时间', null=True)
 
     class Meta:

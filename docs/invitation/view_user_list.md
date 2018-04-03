@@ -25,7 +25,7 @@
                 "user_id": "ohg3z0PZe-POhxYCIaXNm16menX4",
                 "view_user_id": "111",
                 "create_at": "2018-04-03T10:09:39.964218",
-                "invite_status": 0,
+                "invite_status": 0,          （-1  未邀请  0 已邀请  1 邀请匹配成功）
                 "invite_expire_at": "2018-04-03T10:26:08"
             }
         ]
