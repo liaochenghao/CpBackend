@@ -77,7 +77,7 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
         status = request.data.get('status')
         if not status or status not in (0, 1, 2):
             logger.info('InvitationView update (status=%s)' % status)
-            raise serializers.ValidationError('参数 invitee 有误')
+            raise serializers.ValidationError('参数 status 有误')
         invitation = Invitation.objects.get(id=pk)
         invitation.status = status
         invitation.save()
@@ -98,9 +98,7 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
             redis_client.set_instance(current_user.open_id, UserSerializer(current_user).data)
             redis_client.set_instance(current_user_cp.open_id, UserSerializer(current_user_cp).data)
             # 更新用户记录表信息
-            user_record = UserRecord.objects.filter(user_id=inviter, view_user_id=user.get('open_id'))
-            user_record[0].invite_status = 1
-            user_record[0].save()
+            UserRecord.objects.filter(user_id=inviter, view_user_id=user.get('open_id')).update(invite_status = 1)
         return Response()
 
     @list_route(methods=['get'])
