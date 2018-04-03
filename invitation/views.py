@@ -66,6 +66,7 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
         # 发送邀请之后要修改用户记录表中数据
         user_record = UserRecord.objects.filter(user_id=user.get('open_id'), view_user_id=params.get('invitee'))
         user_record[0].invite_expire_at = request.data['expire_at']
+        user_record[0].invite_at = request.data['create_time']
         user_record[0].save()
         NewCornCompute.compute_new_corn(user.get('open_id'), NewCornType.INVITE_USERS.value)
         return Response()
@@ -191,7 +192,31 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
 class UserRecordView(viewsets.GenericViewSet, mixins.ListModelMixin):
     queryset = UserRecord.objects.all()
     serializer_class = UserRecordSerializer
-    filter_fields = ['user_id']
+    # filter_fields = ['user_id']
 
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+    @list_route(methods=['get'])
+    def view_record(self, request):
+        user = request.user_info
+        pageNum = request.query_params.get('pageNum', 1)
+        pageSize = request.query_params.get('pageSize', 10)
+        start = pageSize * (pageNum - 1)
+        end = pageSize * pageNum
+        sql = """select A.view_user_id, A.invite_at, A.invite_status,A.invite_expire_at,B.nickname,B.sex, B.avatar_url 
+from user_record A, register_info B where A.view_user_id=B.user_id AND A.user_id='%s' limit %s, %s""" % (
+        user.get('open_id'), start, end)
+        datas = execute_custom_sql(sql)
+        return Response(self.wrapper(datas))
+
+    def wrapper(self, datas):
+        result = list()
+        for data in datas:
+            info = dict()
+            info['view_user_id'] = data[0]
+            info['invite_at'] = data[1]
+            info['invite_status'] = data[2]
+            info['invite_expire_at'] = data[3]
+            info['nickname'] = data[4]
+            info['sex'] = data[5]
+            info['avatar_url'] = data[6]
+            result.append(info)
+        return result

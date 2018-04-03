@@ -1,7 +1,6 @@
 # coding: utf-8
 import uuid
 
-import datetime
 from rest_framework import serializers
 from invitation.models import Invitation, UserRecord
 
@@ -22,5 +21,5 @@ class InvitationSerializer(serializers.ModelSerializer):
 class UserRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserRecord
-        fields = ['id', 'user_id', 'view_user_id', 'create_at', 'invite_status', 'invite_expire_at']
+        fields = ['id', 'user_id', 'view_user_id', 'create_at', 'invite_status', 'invite_expire_at', 'invite_at']
         read_only_fields = ['id']
