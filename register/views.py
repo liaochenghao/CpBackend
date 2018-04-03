@@ -8,11 +8,12 @@ from authentication.models import User
 from register.models import RegisterInfo, Register, NewCornRecord
 from register.serializer import RegisterInfoSerializer, RegisterSerializer, NewCornRecordSerializer
 from django.db import transaction
-from invitation.models import Invitation
+from invitation.models import Invitation, UserRecord
 import uuid
 import logging
 from common.ComputeNewCorn import NewCornCompute
 from common.NewCornType import NewCornType
+
 logger = logging.getLogger('django')
 
 
@@ -89,11 +90,16 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         user_info = request.user_info
         if request.query_params.get('auto') == 'True':
             NewCornCompute.compute_new_corn(user_info.get('open_id'), NewCornType.SWITCH_USER.value)
-        # 首先查询邀请数据表，找到已经邀请的用户的编号
-        id_list = Invitation.objects.filter(inviter=user_info['open_id']).values_list('invitee')
-        logger.info('RegisterInfoView random id_list: %s' % list(id_list))
+        # 首先查询已看过用户记录表
+        id_list = UserRecord.objects.filter(user_id=user_info['open_id']).values_list('view_user_id')
+        id_result_list = list()
+        for _id in id_list:
+            id_result_list.append(_id[0])
+        # 在查询的时候不能随机获取到当前用户，故需要将当前用户编号放入排他条件中
+        id_result_list.append(user_info.get('open_id'))
+        logger.info('RegisterInfoView random id_list: %s' % id_result_list)
         # 从注册信息表中随机获取不在已邀请的用户列表中的用户
-        total = RegisterInfo.objects.exclude(user_id__in=list(id_list)).count()
+        total = RegisterInfo.objects.exclude(user_id__in=id_result_list).count()
         if total == 0:
             raise exceptions.ValidationError('暂无匹配用户信息')
         logger.info('RegisterInfoView total = %s' % total)
@@ -105,6 +111,8 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         logger.info('随机获取到的用户ID= %s' % result[0].user_id)
         user = User.objects.filter(open_id=result[0].user_id).first()
         data = RegisterInfoSerializer(result[0]).data
+        # 获取到随机用户之后，应将当前用户放入查看记录表user_record中
+        UserRecord.objects.create(user_id=user_info['open_id'], view_user_id=data.get('user'), invite_status=0)
         data['avatar_url'] = user.avatar_url
         data['age'] = datetime.datetime.now().year - int(data['birthday'][:4])
         data['sex'] = '男' if data['sex'] == 1 else '女'
@@ -208,4 +216,3 @@ class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins
             new_corn_record = new_corn_record.latest('create_at')
             balance = new_corn_record.balance
         return Response({'user_id': user_id, 'balance': balance})
-

@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from authentication.models import User
 from authentication.serializers import UserSerializer
 from common.ComputeNewCorn import NewCornCompute
-from invitation.models import Invitation
-from invitation.serializer import InvitationSerializer
+from invitation.models import Invitation, UserRecord
+from invitation.serializer import InvitationSerializer, UserRecordSerializer
 import logging
 from common.execute_sql import execute_custom_sql
 from redis_tool.redis_server import redis_client
@@ -60,7 +60,13 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
         user = request.user_info
         if not params.get('invitee'):
             raise serializers.ValidationError('参数 invitee 不能为空')
+        request.data['create_time'] = datetime.datetime.now()
+        request.data['expire_at'] = request.data['create_time'] + datetime.timedelta(days=1)
         super().create(request, *args, **kwargs)
+        # 发送邀请之后要修改用户记录表中数据
+        user_record = UserRecord.objects.filter(user_id=user.get('open_id'), view_user_id=params.get('invitee'))
+        user_record[0].invite_expire_at = request.data['expire_at']
+        user_record[0].save()
         NewCornCompute.compute_new_corn(user.get('open_id'), NewCornType.INVITE_USERS.value)
         return Response()
 
@@ -92,6 +98,10 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
             # 同时更新缓存中用户信息
             redis_client.set_instance(current_user.open_id, UserSerializer(current_user).data)
             redis_client.set_instance(current_user_cp.open_id, UserSerializer(current_user_cp).data)
+            # 更新用户记录表信息
+            user_record = UserRecord.objects.filter(user_id=inviter, view_user_id=user.get('open_id'))
+            user_record[0].invite_status = 1
+            user_record[0].save()
         return Response()
 
     @list_route(methods=['get'])
@@ -144,7 +154,8 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
             data_temp['total'] = temp_dict.get(temp.user_id)
             data_temp['user_id'] = temp.user_id
             result.append(data_temp)
-        temp = Invitation.objects.filter(inviter=user.get('open_id'), invitee__in=id_list, status=0).values_list('invitee')
+        temp = Invitation.objects.filter(inviter=user.get('open_id'), invitee__in=id_list, status=0).values_list(
+            'invitee')
         invite_list = list()
         for basic in temp:
             invite_list.append(list(basic)[0])
@@ -175,3 +186,12 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
             raise serializers.ValidationError('参数 code 无效')
         NewCornCompute.compute_new_corn(inviter[0].open_id, type, other_open_id, nickname)
         return Response()
+
+
+class UserRecordView(viewsets.GenericViewSet, mixins.ListModelMixin):
+    queryset = UserRecord.objects.all()
+    serializer_class = UserRecordSerializer
+    filter_fields = ['user_id']
+
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
