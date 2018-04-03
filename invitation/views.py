@@ -98,7 +98,8 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
             redis_client.set_instance(current_user.open_id, UserSerializer(current_user).data)
             redis_client.set_instance(current_user_cp.open_id, UserSerializer(current_user_cp).data)
             # 更新用户记录表信息
-            UserRecord.objects.filter(user_id=inviter, view_user_id=user.get('open_id')).update(invite_status = 1)
+            UserRecord.objects.filter(user_id=inviter, view_user_id=user.get('open_id')).update(invite_status=1)
+            UserRecord.objects.filter(user_id=user.get('open_id'), view_user_id=inviter).update(invite_status=1)
         return Response()
 
     @list_route(methods=['get'])
