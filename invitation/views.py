@@ -64,11 +64,8 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
         request.data['expire_at'] = request.data['create_time'] + datetime.timedelta(days=1)
         super().create(request, *args, **kwargs)
         # 发送邀请之后要修改用户记录表中数据
-        user_record = UserRecord.objects.filter(user_id=user.get('open_id'), view_user_id=params.get('invitee'))
-        user_record[0].invite_status = 0
-        user_record[0].invite_expire_at = request.data['expire_at']
-        user_record[0].invite_at = request.data['create_time']
-        user_record[0].save()
+        UserRecord.objects.filter(user_id=user.get('open_id'), view_user_id=params.get('invitee')).update(
+            invite_status=0, invite_expire_at=request.data['expire_at'], invite_at=request.data['create_time'])
         NewCornCompute.compute_new_corn(user.get('open_id'), NewCornType.INVITE_USERS.value)
         return Response()
 
@@ -193,6 +190,7 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
 class UserRecordView(viewsets.GenericViewSet, mixins.ListModelMixin):
     queryset = UserRecord.objects.all()
     serializer_class = UserRecordSerializer
+
     # filter_fields = ['user_id']
 
     @list_route(methods=['get'])
@@ -204,7 +202,7 @@ class UserRecordView(viewsets.GenericViewSet, mixins.ListModelMixin):
         end = pageSize * pageNum
         sql = """select A.view_user_id, A.invite_at, A.invite_status,A.invite_expire_at,B.nickname,B.sex, B.avatar_url 
 from user_record A, register_info B where A.view_user_id=B.user_id AND A.user_id='%s' limit %s, %s""" % (
-        user.get('open_id'), start, end)
+            user.get('open_id'), start, end)
         datas = execute_custom_sql(sql)
         return Response(self.wrapper(datas))
 
