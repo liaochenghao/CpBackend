@@ -3,7 +3,8 @@ import base64
 import json
 from Crypto.Cipher import AES
 from CpBackend.settings import WX_SMART_CONFIG
-
+import sys
+reload(sys)
 
 class WXBizDataCrypt:
     def __init__(self, sessionKey):
@@ -24,4 +25,4 @@ class WXBizDataCrypt:
         return decrypted
 
     def _unpad(self, s):
-        return s[:-ord(s[len(s) - 1:])]
+        return s[:-ord(s[len(s) - 1:])].decode('utf8')
