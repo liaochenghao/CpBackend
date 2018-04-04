@@ -61,7 +61,7 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
         if not params.get('invitee'):
             raise serializers.ValidationError('参数 invitee 不能为空')
         if user.get('cp_user_id'):
-            raise serializers.ValidationError('用户已成功匹配CP，无法继续邀请')
+            raise serializers.ValidationError('您已成功匹配CP，无法继续邀请')
         request.data['create_time'] = datetime.datetime.now()
         request.data['expire_at'] = request.data['create_time'] + datetime.timedelta(days=1)
         super().create(request, *args, **kwargs)
