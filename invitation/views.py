@@ -203,7 +203,7 @@ class UserRecordView(viewsets.GenericViewSet, mixins.ListModelMixin):
     def view_record(self, request):
         user = request.user_info
         pageNum = request.query_params.get('pageNum', 1)
-        pageSize = request.query_params.get('pageSize', 10)
+        pageSize = request.query_params.get('pageSize', 15)
         start = pageSize * (pageNum - 1)
         end = pageSize * pageNum
         sql = """select A.view_user_id, A.invite_at, A.invite_status,A.invite_expire_at,B.nickname,B.sex, B.avatar_url 
