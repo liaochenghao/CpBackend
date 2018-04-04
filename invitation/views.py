@@ -152,13 +152,18 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
             data_temp['total'] = temp_dict.get(temp.user_id)
             data_temp['user_id'] = temp.user_id
             result.append(data_temp)
-        temp = Invitation.objects.filter(inviter=user.get('open_id'), invitee__in=id_list, status=0).values_list(
-            'invitee')
-        invite_list = list()
+        # 当前用户可能向CP发送过邀请（过期），故需要判断处理
+        temp = Invitation.objects.filter(inviter=user.get('open_id'), invitee__in=id_list).values_list(
+            'invitee', 'status', 'expire_at')
+        temp_dict = dict()
         for basic in temp:
-            invite_list.append(list(basic)[0])
-        for info in result:
-            info['invite'] = 1 if info['user_id'] in invite_list else 0
+            basic_list = list(basic)
+            if basic_list[2] < datetime.datetime.now():
+                temp_dict[basic_list[0]] = 2
+            else:
+                temp_dict[basic_list[0]] = basic_list[1]
+        for data in result:
+            data['status'] = temp_dict.get(data['user_id'], -1)
         return Response(result)
 
     @list_route(methods=['get'])

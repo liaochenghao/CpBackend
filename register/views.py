@@ -35,8 +35,6 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         # 将注册信息录入数据库
         request.data['id'] = str(uuid.uuid4())
         request.data['user'] = user.get('open_id')
-        logger.info('ooooooooooooooooooooooooooooooooooooooooo')
-        logger.info(request.data['birthday'])
         request.data['constellation'] = self._get_constellations(request.data['birthday'])
         request.data['avatar_url'] = user.get('avatar_url')
         super().create(request, *args, **kwargs)

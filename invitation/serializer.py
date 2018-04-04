@@ -9,7 +9,7 @@ class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitation
         fields = ['id', 'inviter', 'invitee', 'create_time', 'status', 'update_at', 'expire_at']
-        read_only_fields = ['id', 'inviter', 'expire_at', 'status']
+        read_only_fields = ['id', 'inviter', 'status']
 
     def create(self, validated_data):
         validated_data['id'] = str(uuid.uuid4())
