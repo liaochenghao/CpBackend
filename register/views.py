@@ -212,3 +212,7 @@ class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins
             new_corn_record = new_corn_record.latest('create_at')
             balance = new_corn_record.balance
         return Response({'user_id': user_id, 'balance': balance})
+
+    @list_route(methods=['get'])
+    def check_public_number(self, request):
+        user = request.user_info
