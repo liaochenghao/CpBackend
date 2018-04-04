@@ -49,6 +49,7 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         if not data.data:
             logger.info('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
             raise serializers.ValidationError('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
+
         pc = WXBizDataCrypt(user_info.session_key)
         result = pc.decrypt(encryptedData, iv)
         logger.info('ooooooooooooooooooooooooooooooooooo')
