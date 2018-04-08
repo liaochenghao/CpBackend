@@ -136,7 +136,7 @@ DATABASES = {
         'NAME': 'cp_backend',
         'USER': 'root',
         'PASSWORD': 'Qwe=-00.369.',
-        'HOST': '47.92.115.126',
+        'HOST': 'localhost',
         'PORT': 3306,
         'CHARSET': 'UTF-8',
         'ATOMIC_REQUESTS': True,
