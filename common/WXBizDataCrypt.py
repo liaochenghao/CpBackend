@@ -8,13 +8,13 @@ from CpBackend.settings import WX_SMART_CONFIG
 class WXBizDataCrypt:
     def __init__(self, sessionKey):
         self.appId = WX_SMART_CONFIG['appid']
-        self.sessionKey = sessionKey
+        self.sessionKey = base64.b64decode(sessionKey)
 
     def decrypt(self, encryptedData, iv):
         # base64 decode
         encryptedData = base64.b64decode(encryptedData)
         iv = base64.b64decode(iv)
-        cipher = AES.new(base64.b64decode(self.sessionKey), AES.MODE_CBC, iv)
+        cipher = AES.new(self.sessionKey, AES.MODE_CBC, iv)
         data = self._unpad(cipher.decrypt(encryptedData))
         print('------------------------------------------------------------')
         print(data)
