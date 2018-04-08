@@ -49,10 +49,14 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         if not data.data:
             logger.info('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
             raise serializers.ValidationError('无法通过用户open_id获取用户记录: user_id=%s' % params.get('user_id'))
-        # pc = WXBizDataCrypt(user_info.session_key)
-        # result = pc.decrypt(encryptedData, iv)
-        # logger.info('ooooooooooooooooooooooooooooooooooo')
-        # logger.info(result)
+        logger.info('ooooooooooooooooooooooooooooooooooo')
+        logger.info('user_info.session_key=%s' % user_info.session_key)
+        logger.info('encryptedData=%s' % encryptedData)
+        logger.info('iv=%s' % iv)
+        pc = WXBizDataCrypt(user_info.session_key)
+        result = pc.decrypt(encryptedData, iv)
+        logger.info('ooooooooooooooooooooooooooooooooooo')
+        logger.info(result)
         # 用户每日登陆获取new币
         NewCornCompute.compute_new_corn(user_info.open_id, NewCornType.DAILY_LOGIN.value)
         # 录入用户信息到数据库，同时也要注意微信用户可能会更换信息
