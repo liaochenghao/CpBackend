@@ -15,7 +15,7 @@ class WXBizDataCrypt:
         encryptedData = base64.b64decode(encryptedData)
         sessionKey = base64.b64decode(self.sessionKey)
         iv = base64.b64decode(iv)
-        cipher = AES.new(sessionKey, AES.MODE_CBC, iv)
+        cipher = AES.new(sessionKey, AES.MODE_CBC, iv, b'0000000000000000')
         decrypted = json.loads(self._unpad(cipher.decrypt(encryptedData)))
         print('------------------------------------------------------------')
 
