@@ -189,7 +189,7 @@ WX_SMART_CONFIG = {
 # micro_service_domain = 'http://42.51.8.152:7070'
 
 REDIS_CONFIG = {
-    'host': '47.92.115.126',
+    'host': 'localhost',
     'port': 6379
 }
 
