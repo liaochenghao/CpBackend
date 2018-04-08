@@ -33,16 +33,15 @@ class NewCornCompute:
             # 数据库中没有当前用户new币记录则创建
             if not record:
                 NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=user_id, operation=operation, balance=corn,
-                                             corn=corn, extra=extra, other_open_id=other_open_id)
+                                             corn=corn, extra=extra, other_open_id=other_open_id, nickname=nickname)
             else:
                 temp = NewCornRecord.objects.filter(user_id=user_id, operation=operation, other_open_id=other_open_id)
                 # 判断是否是首次关注
                 if not temp:
                     balance = record[0].balance
                     NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=user_id, operation=operation,
-                                                 balance=corn + balance,
-                                                 corn=corn,
-                                                 extra=extra, other_open_id=other_open_id)
+                                                 balance=corn + balance, corn=corn, extra=extra,
+                                                 other_open_id=other_open_id, nickname=nickname)
         # 每日登陆的逻辑处理
         elif operation == 3:
             start_date = datetime.datetime.now()
