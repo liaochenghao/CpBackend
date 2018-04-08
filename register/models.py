@@ -74,6 +74,7 @@ class NewCornRecord(models.Model):
     create_at = models.DateTimeField('记录时间', auto_now_add=True, null=True)
     extra = models.CharField('备注说明', max_length=64, null=True)
     other_open_id = models.CharField('其他公众号的ID', max_length=64, null=True)
+    nickname = models.CharField('用户昵称', max_length=64, null=True)
 
     class Meta:
         db_table = "new_corn_record"

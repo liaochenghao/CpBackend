@@ -215,4 +215,11 @@ class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins
 
     @list_route(methods=['get'])
     def check_public_number(self, request):
+        param = request.query_params
+        if not param.get('type'):
+            raise exceptions.ValidationError('Param type is none')
+        if param.get('type') not in (0, 2):
+            raise exceptions.ValidationError('Param type must in (0,2)')
         user = request.user_info
+        result = NewCornRecord.objects.filter(nickname=user.get('nick_name'), operation=type)
+        return Response(True if result else False)
