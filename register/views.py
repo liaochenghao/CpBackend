@@ -221,5 +221,11 @@ class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins
         if param.get('type') not in (0, 2):
             raise exceptions.ValidationError('Param type must in (0,2)')
         user = request.user_info
-        result = NewCornRecord.objects.filter(nickname=user.get('nick_name'), operation=type)
-        return Response(True if result else False)
+        results = NewCornRecord.objects.filter(nickname=user.get('nick_name'), operation__in=(0, 2))
+        data = {'NorthAmerican': False, 'OverseasYouth': False}
+        for result in results:
+            if result.operation == 0:
+                data['OverseasYouth'] = True
+            if result.operation == 2:
+                data['NorthAmerican'] = True
+        return Response(data)

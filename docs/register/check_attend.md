@@ -7,9 +7,7 @@
 
 **请求参数**:
 ```
-    {
-        type："公众号类型"  0-留学新青年公众号  2-北美留学生公众号
-    }
+    
 ```
 
 **成功返回**：
@@ -18,7 +16,7 @@
     "code": 0,
     "msg": "请求成功",
     "data": {
-          true/false
+          {'NorthAmerican': False, 'OverseasYouth': False}
     },
     "field_name": ""
 }
