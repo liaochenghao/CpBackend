@@ -26,7 +26,7 @@ class WxInterface:
             'js_code': code,
             'grant_type': 'authorization_code'
         }
-        response = requests.get(url=url, params=params)
+        response = requests.get(url=url, params=params, verify=False)
         if response.status_code != 200:
             logger.info('WxInterface code_authorize response: %s' % response.text)
             raise exceptions.ValidationError('连接微信服务器异常')
