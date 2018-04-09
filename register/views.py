@@ -93,15 +93,31 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
             id_result_list.append(_id[0])
         # 在查询的时候不能随机获取到当前用户，故需要将当前用户编号放入排他条件中
         id_result_list.append(user_info.get('open_id'))
-        logger.info('RegisterInfoView random id_list: %s' % id_result_list)
+        user_demand = RegisterInfo.objects.filter(user_id=user_info.get('open_id'))
+        # 对CP性别的过滤
+        user_demand_sex = None
+        if user_demand[0].sexual_orientation == 0:
+            user_demand_sex = 1 if user_demand[0].sex == 0 else 0
+        elif user_demand[0].sexual_orientation == 1:
+            user_demand_sex = user_demand[0].sex
+        # 对CP年龄的过滤
+        register_list = RegisterInfo.objects.filter(sex=user_demand_sex).exclude(user_id__in=id_result_list)
+        if user_demand[0].demand_cp_age == 0:
+            register_list = register_list.filter(birthday__gt=user_demand[0].birthday)
+        elif user_demand[0].demand_cp_age == 1:
+            register_list = register_list.filter(birthday__day=user_demand[0].birthday.day,
+                                                 birthday__month=user_demand[0].birthday.month,
+                                                 birthday__year=user_demand[0].birthday.year)
+        else:
+            register_list = register_list.filter(birthday__lt=user_demand[0].birthday)
         # 从注册信息表中随机获取不在已邀请的用户列表中的用户
-        total = RegisterInfo.objects.exclude(user_id__in=id_result_list).count()
+        total = register_list.count()
         if total == 0:
             raise exceptions.ValidationError('暂无匹配用户信息')
         logger.info('RegisterInfoView total = %s' % total)
         seed = random.randint(0, total - 1)
         logger.info('RegisterInfoView random seed: %s' % seed)
-        result = RegisterInfo.objects.exclude(user_id__in=id_result_list)[seed:seed + 1]
+        result = register_list[seed:seed + 1]
         if len(result) == 0:
             raise exceptions.ValidationError('暂无匹配用户信息')
         logger.info('随机获取到的用户ID= %s' % result[0].user_id)
