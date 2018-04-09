@@ -101,7 +101,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         logger.info('RegisterInfoView total = %s' % total)
         seed = random.randint(0, total - 1)
         logger.info('RegisterInfoView random seed: %s' % seed)
-        result = RegisterInfo.objects.exclude(user_id__in=id_list)[seed:seed + 1]
+        result = RegisterInfo.objects.exclude(user_id__in=id_result_list)[seed:seed + 1]
         if len(result) == 0:
             raise exceptions.ValidationError('暂无匹配用户信息')
         logger.info('随机获取到的用户ID= %s' % result[0].user_id)
