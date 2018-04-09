@@ -2,7 +2,7 @@
 
 **请求地址**:
 ```
-    GET     api/v1/register/check_public_number
+    GET     api/v1/newcorn/check_public_number
 ```
 
 **请求参数**:
