@@ -42,6 +42,8 @@ class NewCornCompute:
                     NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=user_id, operation=operation,
                                                  balance=corn + balance, corn=corn, extra=extra,
                                                  other_open_id=other_open_id, nickname=nickname)
+                else:
+                    raise exceptions.ValidationError('当前用户已获得New币')
         # 每日登陆的逻辑处理
         elif operation == 3:
             start_date = datetime.datetime.now()
