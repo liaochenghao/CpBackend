@@ -80,6 +80,10 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
         if not status or status not in (0, 1, 2):
             logger.info('InvitationView update (status=%s)' % status)
             raise serializers.ValidationError('参数 status 有误')
+        # 查看邀请人是否已经匹配成功
+        inviter_info = User.objects.filter(open_id=inviter)
+        if inviter_info and inviter_info[0].cp_user_id:
+            raise serializers.ValidationError('很遗憾，邀请您的用户已成功匹配到CP')
         invitation = Invitation.objects.get(id=pk)
         invitation.status = status
         invitation.save()
