@@ -170,10 +170,10 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
 
     @list_route(methods=['get'])
     def code(self, request):
-        logger.info('*' * 80)
+        logger.info('*' * 70)
         params = request.query_params
         logger.info(params)
-        logger.info('*' * 80)
+        logger.info('*' * 70)
         # 获取邀请码
         code = params.get('code')
         # 获取邀请类型
