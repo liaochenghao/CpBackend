@@ -206,7 +206,7 @@ class UserRecordView(viewsets.GenericViewSet, mixins.ListModelMixin):
         pageSize = request.query_params.get('pageSize', 15)
         start = pageSize * (pageNum - 1)
         end = pageSize * pageNum
-        sql = """select A.view_user_id, A.invite_at, A.invite_status,A.invite_expire_at,B.nickname,B.sex, B.avatar_url 
+        sql = """select A.view_user_id, A.create_at,A.invite_at, A.invite_status,A.invite_expire_at,B.nickname,B.sex, B.avatar_url 
 from user_record A, register_info B where A.view_user_id=B.user_id AND A.user_id='%s' limit %s, %s""" % (
             user.get('open_id'), start, end)
         datas = execute_custom_sql(sql)
@@ -217,11 +217,12 @@ from user_record A, register_info B where A.view_user_id=B.user_id AND A.user_id
         for data in datas:
             info = dict()
             info['view_user_id'] = data[0]
-            info['invite_at'] = data[1]
-            info['invite_status'] = data[2]
-            info['invite_expire_at'] = data[3]
-            info['nickname'] = data[4]
-            info['sex'] = data[5]
-            info['avatar_url'] = data[6]
+            info['create_at'] = data[1]
+            info['invite_at'] = data[2]
+            info['invite_status'] = data[3]
+            info['invite_expire_at'] = data[4]
+            info['nickname'] = data[5]
+            info['sex'] = data[6]
+            info['avatar_url'] = data[7]
             result.append(info)
         return result
