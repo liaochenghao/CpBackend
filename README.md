@@ -49,5 +49,6 @@
 - [用户提交任务](docs/task/finish_task.md)
 - [用户提交任务上传图片](docs/task/finish_task_upload.md)
 - [查看CP是否已提交任务](docs/task/check_cp_result.md)
+- [查看当前用户是否已提交任务](docs/task/check_result.md)
 - [查看用户是否关联相关公众号](docs/register/check_attend.md)
 

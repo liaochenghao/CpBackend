@@ -109,6 +109,15 @@ class UserTaskResultView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixin
         return Response()
 
     @list_route(methods=['get'])
+    def check_task(self, request):
+        user = request.user_info
+        task_id = request.query_params.get('task_id')
+        if not task_id:
+            raise serializers.ValidationError('参数task_id不能为空')
+        result = UserTaskResult.objects.filter(user_id=user.get('open_id'))
+        return Response(True if result else False)
+
+    @list_route(methods=['get'])
     def check_cp_task(self, request):
         user = request.user_info
         task_id = request.query_params.get('task_id')
