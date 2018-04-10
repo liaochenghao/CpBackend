@@ -141,8 +141,8 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
         pageSize = request.query_params.get('pageSize', 10)
         start = pageSize * (pageNum - 1)
         end = pageSize * pageNum
-        sql1 = """SELECT invitee,COUNT(*) as number from invitation GROUP BY invitee ORDER BY number desc
-                limit %s, %s""" % (start, end)
+        sql1 = """SELECT invitee,COUNT(*) as number from invitation where invitee != '%s' GROUP BY invitee ORDER BY number desc
+                limit %s, %s""" % (user.get('open_id'), start, end)
         datas = execute_custom_sql(sql1)
         id_list = list()
         temp_dict = dict()
