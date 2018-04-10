@@ -119,6 +119,7 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
         data = data.first()
         temp = RegisterInfoSerializer(data).data
         temp['update_at'] = user.get('cp_time')
+        temp['age'] = datetime.datetime.now().year - int(data['birthday'][:4])
         return Response(temp)
 
     @list_route(methods=['get'])
