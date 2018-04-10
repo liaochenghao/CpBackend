@@ -98,6 +98,7 @@ class UserTaskResultView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixin
     queryset = UserTaskResult.objects.all()
     serializer_class = UserTaskResultSerializer
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         user = request.user_info
         request.data['user_id'] = user.get('open_id')
@@ -106,6 +107,9 @@ class UserTaskResultView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixin
         request.data['cp_user_id'] = user.get('cp_user_id')
         request.data['id'] = str(uuid.uuid4())
         super().create(request, *args, **kwargs)
+        # 用户提交任务之后要更新user_task中的任务状态
+        UserTask.objects.filter(task_id=request.data['task'], user_id=user.get('open_id'),
+                                cp_user_id=user.get('cp_user_id')).update(status=1)
         return Response()
 
     @list_route(methods=['get'])
