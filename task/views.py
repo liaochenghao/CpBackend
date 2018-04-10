@@ -106,7 +106,8 @@ class UserTaskResultView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixin
             raise serializers.ValidationError('当前用户暂无CP信息')
         request.data['cp_user_id'] = user.get('cp_user_id')
         request.data['id'] = str(uuid.uuid4())
-        check_task = UserTaskResult.objects.filter(task=request.data['task'], user_id=user.get('open_id'),cp_user_id=user.get('cp_user_id'))
+        check_task = UserTaskResult.objects.filter(task=request.data['task'], user_id=user.get('open_id'),
+                                                   cp_user_id=user.get('cp_user_id'))
         if check_task:
             raise serializers.ValidationError('当前用户已提交任务')
         super().create(request, *args, **kwargs)
