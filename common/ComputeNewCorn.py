@@ -27,7 +27,7 @@ class NewCornCompute:
         if operation == 0 or operation == 2:
             # 查询数据库是否已有new币记录
             record = NewCornRecord.objects.filter(user_id=user_id)
-            corn = 3
+            corn = 2
             extra = '关注留学新青年' if operation == 0 else '关注北美留学生'
             extra = '邀请用户' + nickname + extra
             # 数据库中没有当前用户new币记录则创建
