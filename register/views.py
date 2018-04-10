@@ -105,9 +105,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         if user_demand[0].demand_cp_age == 0:
             register_list = register_list.filter(birthday__gt=user_demand[0].birthday)
         elif user_demand[0].demand_cp_age == 1:
-            register_list = register_list.filter(birthday__day=user_demand[0].birthday.day,
-                                                 birthday__month=user_demand[0].birthday.month,
-                                                 birthday__year=user_demand[0].birthday.year)
+            register_list = register_list.filter(birthday__year=user_demand[0].birthday.year)
         else:
             register_list = register_list.filter(birthday__lt=user_demand[0].birthday)
         # 从注册信息表中随机获取不在已邀请的用户列表中的用户
