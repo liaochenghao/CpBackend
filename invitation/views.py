@@ -171,6 +171,12 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
                 temp_dict[basic_list[0]] = basic_list[1]
         for data in result:
             data['status'] = temp_dict.get(data['user_id'], -1)
+        for i in range(len(result)-1):
+            index = i
+            for j in range(i+1, len(result)):
+                if result[index].get('total') < result[j].get('total'):
+                    index = j
+            result[i], result[index] = result[index], result[i]
         return Response(result)
 
     @list_route(methods=['get'])
