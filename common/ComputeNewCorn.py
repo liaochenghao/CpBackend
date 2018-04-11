@@ -78,7 +78,7 @@ class NewCornCompute:
                 balance -= corn
                 extra = '邀请用户'
             elif operation == 4:
-                corn = 3
+                corn = 5
                 balance += corn
                 extra = '活动报名'
             elif operation == 5:
