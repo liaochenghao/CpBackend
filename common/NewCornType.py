@@ -20,4 +20,6 @@ class NewCornType(Enum):
     SWITCH_USER = 6
     # 邀请用户报名
     INVITE_USERS_ATTEND = 7
+    # 预报名
+    PRE_ACTIVITY = 8
 

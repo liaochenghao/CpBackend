@@ -16,6 +16,8 @@ OPTION_CHOICE = (
     (4, '活动报名'),
     (5, '接受用户邀请'),
     (6, '切换用户'),
+    (7, '邀请用户报名'),
+    (8, '预报名活动'),
 )
 
 
@@ -98,6 +100,10 @@ class NewCornCompute:
             elif operation == 7:
                 extra = '邀请用户报名'
                 corn = 2
+                balance += corn
+            elif operation == 8:
+                extra = '预报名活动'
+                corn = 10
                 balance += corn
             NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=user_id, operation=operation, balance=balance,
                                          corn=corn, extra=extra)

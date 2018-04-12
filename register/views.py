@@ -52,6 +52,9 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
             inviter = User.objects.filter(code=request.data.get('invite_code'))
             if inviter:
                 NewCornCompute.compute_new_corn(inviter[0].open_id, NewCornType.INVITE_USERS_ATTEND.value)
+        # 判断用户是否是预报名
+        if datetime.datetime.now().day < 15 and datetime.datetime.now().month == 4:
+            NewCornCompute.compute_new_corn(user.get('open_id'), NewCornType.PRE_ACTIVITY.value)
         return Response()
 
     def _get_constellations(self, birthday):
