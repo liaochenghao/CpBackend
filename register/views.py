@@ -87,40 +87,62 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         if request.query_params.get('auto') == 'True':
             NewCornCompute.compute_new_corn(user_info.get('open_id'), NewCornType.SWITCH_USER.value)
         # 首先查询已看过用户记录表
-        id_list = UserRecord.objects.filter(user_id=user_info['open_id']).values_list('view_user_id')
-        id_result_list = list()
-        for _id in id_list:
-            id_result_list.append(_id[0])
-        # 在查询的时候不能随机获取到当前用户，故需要将当前用户编号放入排他条件中
-        id_result_list.append(user_info.get('open_id'))
-        user_demand = RegisterInfo.objects.filter(user_id=user_info.get('open_id'))
-        # 对CP性别的过滤
-        user_demand_sex = None
-        if user_demand[0].sexual_orientation == 0:
-            user_demand_sex = 1 if user_demand[0].sex == 0 else 0
-        elif user_demand[0].sexual_orientation == 1:
-            user_demand_sex = user_demand[0].sex
-        # 对CP年龄的过滤
-        register_list = RegisterInfo.objects.filter(sex=user_demand_sex).exclude(user_id__in=id_result_list)
-        if user_demand[0].demand_cp_age == 0:
-            register_list = register_list.filter(birthday__gt=user_demand[0].birthday)
-        elif user_demand[0].demand_cp_age == 1:
-            register_list = register_list.filter(birthday__year=user_demand[0].birthday.year)
-        else:
-            register_list = register_list.filter(birthday__lt=user_demand[0].birthday)
-        # 从注册信息表中随机获取不在已邀请的用户列表中的用户
-        total = register_list.count()
-        if total == 0:
-            raise exceptions.ValidationError('暂无匹配用户信息')
-        logger.info('RegisterInfoView total = %s' % total)
-        seed = random.randint(0, total - 1)
-        logger.info('RegisterInfoView random seed: %s' % seed)
-        result = register_list[seed:seed + 1]
-        if len(result) == 0:
-            raise exceptions.ValidationError('暂无匹配用户信息')
-        logger.info('随机获取到的用户ID= %s' % result[0].user_id)
-        user = User.objects.filter(open_id=result[0].user_id).first()
-        data = RegisterInfoSerializer(result[0]).data
+        id_list = UserRecord.objects.filter(user_id=user_info['open_id']).values_list('view_user_id').order_by(
+            '-create_at')
+        # 定义目标用户ID
+        target_user = None
+        # 如果不扣new币，则从已看过的列表中选取最新的一个
+        if id_list and request.query_params.get('auto') == 'False':
+            target_user_id = id_list[0][0]
+            target_user = RegisterInfo.objects.filter(user_id=target_user_id)[0]
+        elif request.query_params.get('auto') == 'True' or len(id_list) == 0:
+            id_result_list = list()
+            for _id in id_list:
+                id_result_list.append(_id[0])
+            # 在查询的时候不能随机获取到当前用户，故需要将当前用户编号放入排他条件中
+            id_result_list.append(user_info.get('open_id'))
+            user_demand = RegisterInfo.objects.filter(user_id=user_info.get('open_id'))
+            # 对CP性别的过滤
+            user_demand_sex = None
+            if user_demand[0].sexual_orientation == 0:
+                user_demand_sex = 1 if user_demand[0].sex == 0 else 0
+            elif user_demand[0].sexual_orientation == 1:
+                user_demand_sex = user_demand[0].sex
+            # 对CP年龄的过滤
+            register_list = RegisterInfo.objects.filter(sex=user_demand_sex, tag=1).exclude(user_id__in=id_result_list)
+            if user_demand[0].demand_cp_age == 0:
+                register_list = register_list.filter(birthday__gt=user_demand[0].birthday)
+            elif user_demand[0].demand_cp_age == 1:
+                register_list = register_list.filter(birthday__year=user_demand[0].birthday.year)
+            else:
+                register_list = register_list.filter(birthday__lt=user_demand[0].birthday)
+            # 从注册信息表中随机获取不在已邀请的用户列表中的用户
+            total = register_list.count()
+            if total == 0:
+                # 从僵尸用户中查找
+                logger.info('*'*70)
+                logger.info('Get User From Corpse')
+                register_list = RegisterInfo.objects.filter(sex=user_demand_sex, tag=0).exclude(
+                    user_id__in=id_result_list)
+                if user_demand[0].demand_cp_age == 0:
+                    register_list = register_list.filter(birthday__gt=user_demand[0].birthday)
+                elif user_demand[0].demand_cp_age == 1:
+                    register_list = register_list.filter(birthday__year=user_demand[0].birthday.year)
+                else:
+                    register_list = register_list.filter(birthday__lt=user_demand[0].birthday)
+                total = register_list.count()
+                if total == 0:
+                    raise exceptions.ValidationError('暂无匹配用户信息')
+                logger.info('RegisterInfoView total = %s' % total)
+                seed = random.randint(0, total - 1)
+                logger.info('RegisterInfoView random seed: %s' % seed)
+                result = register_list[seed:seed + 1]
+                if len(result) == 0:
+                    raise exceptions.ValidationError('暂无匹配用户信息')
+                logger.info('随机获取到的用户ID= %s' % result[0].user_id)
+                target_user = result[0]
+        user = User.objects.filter(open_id=target_user.user_id).first()
+        data = RegisterInfoSerializer(target_user).data
         # 获取到随机用户之后，应将当前用户放入查看记录表user_record中
         UserRecord.objects.create(user_id=user_info['open_id'], view_user_id=data.get('user'))
         data['avatar_url'] = user.avatar_url
