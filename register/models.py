@@ -42,6 +42,7 @@ class RegisterInfo(models.Model):
     update_at = models.DateTimeField('修改时间', auto_now=True, null=True)
     invite_code = models.CharField('邀请码', max_length=16, null=True)
     tag = models.IntegerField('用户标记', default=1, null=True)
+    picture_url = models.CharField('用户图片', null=True, max_length=255)
 
     class Meta:
         db_table = "register_info"

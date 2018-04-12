@@ -9,7 +9,7 @@ class RegisterInfoSerializer(serializers.ModelSerializer):
         model = RegisterInfo
         fields = ['id', 'nickname', 'sexual_orientation', 'overseas_study_status', 'wechat', 'phone_number', 'hometown',
                   'future_city', 'future_school', 'user', 'create_at', 'update_at', 'constellation', 'sex', 'birthday',
-                  'demand_area', 'demand_cp_age', 'degree', 'avatar_url', 'tag']
+                  'demand_area', 'demand_cp_age', 'degree', 'avatar_url', 'tag','picture_url']
 
 
 class RegisterSerializer(serializers.ModelSerializer):

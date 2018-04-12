@@ -1,9 +1,14 @@
+import json
 import random
 
 import datetime
+
+from django.http import HttpResponse
 from rest_framework.response import Response
-from rest_framework import mixins, viewsets, exceptions
+from rest_framework import mixins, viewsets, exceptions, serializers
 from rest_framework.decorators import list_route, detail_route
+
+from CpBackend import settings
 from authentication.models import User
 from register.models import RegisterInfo, Register, NewCornRecord
 from register.serializer import RegisterInfoSerializer, RegisterSerializer, NewCornRecordSerializer
@@ -120,7 +125,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
             total = register_list.count()
             if total == 0:
                 # 从僵尸用户中查找
-                logger.info('*'*70)
+                logger.info('*' * 70)
                 logger.info('Get User From Corpse')
                 register_list = RegisterInfo.objects.filter(sex=user_demand_sex, tag=0).exclude(
                     user_id__in=id_result_list)
@@ -189,6 +194,25 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
             result.future_school = params.get('future_school')
         result.save()
         return Response()
+
+    @list_route(methods=['post'])
+    def upload(self, request):
+        """
+         用户上传图片
+         """
+        user = request.user_info
+        user_register = RegisterInfo.objects.filter(user_id=user.get('open_id'))
+        if not user_register:
+            raise serializers.ValidationError('当前用户未填写注册信息，不能上传图片')
+        f1 = request.FILES['image']
+        rand_name = str(uuid.uuid4()) + f1.name[f1.name.rfind('.'):]
+        fname = '%s/upload/picture/%s' % (settings.MEDIA_ROOT, rand_name)
+        with open(fname, 'wb') as pic:
+            for c in f1.chunks():
+                pic.write(c)
+        user_register[0].picture_url = '/upload/picture/' + rand_name
+        user_register[0].save()
+        return HttpResponse(json.dumps({'code': 0, 'data': 'success'}))
 
 
 class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,

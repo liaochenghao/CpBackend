@@ -28,6 +28,7 @@
 - [获取活动信息](docs/activity/activity.md)
 - [填写注册资料](docs/register/register_info.md)
 - [修改注册资料](docs/register/update_register_info.md)
+- [上传用户图片](docs/register/upload_picture.md)
 - [检查用户是否报名活动](docs/register/check_register.md)
 - [随机获取用户信息](docs/register/random_register_info.md)
 - [获取已经查看过的用户列表](docs/invitation/view_user_list.md)
