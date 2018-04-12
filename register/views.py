@@ -88,8 +88,8 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
             queryset = queryset.filter(user_id=user_id)
         return queryset
 
-    @list_route()
     @transaction.atomic
+    @list_route(methods=['get'])
     def random(self, request):
         user_info = request.user_info
         if request.query_params.get('auto') == 'True':
@@ -101,8 +101,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         target_user = None
         # 如果不扣new币，则从已看过的列表中选取最新的一个
         if id_list and request.query_params.get('auto') == 'False':
-            target_user_id = id_list[0][0]
-            target_user = RegisterInfo.objects.filter(user_id=target_user_id)[0]
+            target_user = RegisterInfo.objects.filter(user_id=id_list[0][0])[0]
         elif request.query_params.get('auto') == 'True' or len(id_list) == 0:
             id_result_list = list()
             for _id in id_list:
@@ -126,7 +125,14 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
                 register_list = register_list.filter(birthday__lt=user_demand[0].birthday)
             # 从注册信息表中随机获取不在已邀请的用户列表中的用户
             total = register_list.count()
-            if total == 0:
+            if total != 0:
+                seed = random.randint(0, total - 1)
+                logger.info('RegisterInfoView random seed: %s' % seed)
+                result = register_list[seed:seed + 1]
+                target_user = result[0]
+                logger.info('9999999999')
+                logger.info('target_user_id=%s' % target_user.user_id)
+            else:
                 # 从僵尸用户中查找
                 logger.info('*' * 70)
                 logger.info('Get User From Corpse')
