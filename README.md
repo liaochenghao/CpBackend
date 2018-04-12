@@ -26,6 +26,7 @@
 - [检查账户](docs/auth/check_account.md)
 - [获取用户信息](docs/auth/person_information.md)
 - [获取活动信息](docs/activity/activity.md)
+- [获取活动开始时间](docs/activity/activity_time.md)
 - [填写注册资料](docs/register/register_info.md)
 - [修改注册资料](docs/register/update_register_info.md)
 - [上传用户图片](docs/register/upload_picture.md)
