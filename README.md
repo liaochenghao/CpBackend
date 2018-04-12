@@ -52,4 +52,5 @@
 - [查看CP是否已提交任务](docs/task/check_cp_result.md)
 - [查看当前用户是否已提交任务](docs/task/check_result.md)
 - [查看用户是否关联相关公众号](docs/register/check_attend.md)
+- [获取报名人数](docs/register/get_attend_number.md)
 

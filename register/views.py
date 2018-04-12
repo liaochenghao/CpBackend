@@ -259,6 +259,11 @@ class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.List
         # 给新用户添加New币
         NewCornCompute.compute_new_corn(user_info.get('open_id'), NewCornType.ATTEND_ACTIVITY.value)
 
+    @list_route(methods=['get'])
+    def activity_number(self, request):
+        count = Register.objects.all().count()
+        return Response(count)
+
 
 class NewCornRecordView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin):
     queryset = NewCornRecord.objects.all()
