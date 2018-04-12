@@ -103,7 +103,7 @@ class NewCornCompute:
                 balance += corn
             elif operation == 8:
                 extra = '预报名活动'
-                corn = 10
+                corn = 20
                 balance += corn
             NewCornRecord.objects.create(id=str(uuid.uuid4()), user_id=user_id, operation=operation, balance=balance,
                                          corn=corn, extra=extra)
