@@ -216,15 +216,19 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         user_register = RegisterInfo.objects.filter(user_id=user.get('open_id'))
         if not user_register:
             raise serializers.ValidationError('当前用户未填写注册信息，不能上传图片')
-        f1 = request.FILES['image']
-        rand_name = str(uuid.uuid4()) + f1.name[f1.name.rfind('.'):]
-        fname = '%s/upload/picture/%s' % (settings.MEDIA_ROOT, rand_name)
-        with open(fname, 'wb') as pic:
-            for c in f1.chunks():
-                pic.write(c)
-        user_register[0].picture_url = '/upload/picture/' + rand_name
-        user_register[0].save()
-        return HttpResponse(json.dumps({'code': 0, 'data': 'success'}))
+        try:
+            f1 = request.FILES['image']
+            rand_name = str(uuid.uuid4()) + f1.name[f1.name.rfind('.'):]
+            fname = '%s/upload/picture/%s' % (settings.MEDIA_ROOT, rand_name)
+            with open(fname, 'wb') as pic:
+                for c in f1.chunks():
+                    pic.write(c)
+            user_register[0].picture_url = '/upload/picture/' + rand_name
+            user_register[0].save()
+            return HttpResponse(json.dumps({'code': 0, 'data': 'success'}))
+        except exceptions as e:
+            logger.info(e + "")
+            return HttpResponse(json.dumps({'code': -1, 'data': '图片上传失败'}))
 
 
 class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
