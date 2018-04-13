@@ -22,4 +22,6 @@ class NewCornType(Enum):
     INVITE_USERS_ATTEND = 7
     # 预报名
     PRE_ACTIVITY = 8
+    # 系统赠送
+    SYS_DONATE = 9
 
