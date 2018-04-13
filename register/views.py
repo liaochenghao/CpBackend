@@ -162,6 +162,8 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         data['avatar_url'] = user.avatar_url
         data['age'] = datetime.datetime.now().year - int(data['birthday'][:4])
         data['sex'] = '男' if data['sex'] == 1 else '女'
+        if data['picture_url'] and str(data['picture_url']).find('https') == -1:
+            data['picture_url'] = 'https://cp1.lxhelper.com/media' + data['picture_url']
         if data['demand_cp_age'] == 0:
             data['demand_cp_age'] = '比TA大'
         elif data['demand_cp_age'] == 1:
@@ -172,7 +174,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
             data['sexual_orientation'] = '异性'
         elif data['sexual_orientation'] == 1:
             data['sexual_orientation'] = '同性'
-        elif data['sexual_orientation'] == 1:
+        elif data['sexual_orientation'] == 2:
             data['sexual_orientation'] = '双性'
         if data['overseas_study_status'] == 0:
             data['overseas_study_status'] = '准留学生'
