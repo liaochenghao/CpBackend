@@ -158,7 +158,8 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         user = User.objects.filter(open_id=target_user.user_id).first()
         data = RegisterInfoSerializer(target_user).data
         # 获取到随机用户之后，应将当前用户放入查看记录表user_record中
-        UserRecord.objects.create(user_id=user_info['open_id'], view_user_id=data.get('user'))
+        if not (id_list and request.query_params.get('auto') == 'False'):
+            UserRecord.objects.create(user_id=user_info['open_id'], view_user_id=data.get('user'))
         data['avatar_url'] = user.avatar_url
         data['age'] = datetime.datetime.now().year - int(data['birthday'][:4])
         data['sex'] = '男' if data['sex'] == 1 else '女'
