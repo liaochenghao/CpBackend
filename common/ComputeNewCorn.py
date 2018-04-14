@@ -76,7 +76,7 @@ class NewCornCompute:
                 corn = 3
                 if balance < corn:
                     logger.info('compute_new_corn operation=%s,balance=%s' % (str(operation), str(balance)))
-                    raise exceptions.ValidationError('账户余额不足')
+                    raise exceptions.ValidationError('您的new币不足，请去完成任务获取')
                 balance -= corn
                 extra = '邀请用户'
             elif operation == 4:
@@ -87,14 +87,14 @@ class NewCornCompute:
                 corn = 2
                 if balance < corn:
                     logger.info('compute_new_corn operation=%s,balance=%s' % (str(operation), str(balance)))
-                    raise exceptions.ValidationError('账户余额不足')
+                    raise exceptions.ValidationError('您的new币不足，请去完成任务获取')
                 balance -= corn
                 extra = '接受用户邀请'
             elif operation == 6:
                 corn = 1
                 if balance < corn:
                     logger.info('compute_new_corn operation=%s,balance=%s' % (str(operation), str(balance)))
-                    raise exceptions.ValidationError('账户余额不足')
+                    raise exceptions.ValidationError('您的new币不足，请去完成任务获取')
                 balance -= corn
                 extra = '切换用户'
             elif operation == 7:
