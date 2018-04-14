@@ -139,11 +139,14 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
                 register_list = RegisterInfo.objects.filter(sex=user_demand_sex, tag=0).exclude(
                     user_id__in=id_result_list)
                 if user_demand[0].demand_cp_age == 0:
-                    register_list = register_list.filter(birthday__gt=user_demand[0].birthday)
+                    # 比CP年龄大
+                    register_list = register_list.filter(birthday__lt=user_demand[0].birthday)
                 elif user_demand[0].demand_cp_age == 1:
+                    # 比CP年龄小
                     register_list = register_list.filter(birthday__year=user_demand[0].birthday.year)
                 else:
-                    register_list = register_list.filter(birthday__lt=user_demand[0].birthday)
+                    # 跟CP年龄一样大，只判断年份一样
+                    register_list = register_list.filter(birthday__gt=user_demand[0].birthday)
                 total = register_list.count()
                 if total == 0:
                     raise exceptions.ValidationError('暂无匹配用户信息')
