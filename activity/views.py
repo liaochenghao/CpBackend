@@ -4,6 +4,7 @@ from activity.models import Activity
 from activity.serializers import ActivitySerializer
 from rest_framework import exceptions
 from register.models import Register
+from common.execute_sql import dict_fetchall
 
 
 class ActivityView(APIView):
@@ -33,3 +34,11 @@ class ActivityStartAtView(APIView):
         serializer = ActivitySerializer(activity[0])
         result = serializer.data
         return Response(result['start_at'])
+
+
+class TestView(APIView):
+    def get(self, request):
+        sql = 'SELECT invitee,COUNT(*) as number from invitation GROUP BY invitee'
+        result = dict_fetchall(sql)
+        print(result)
+        return Response(result)
