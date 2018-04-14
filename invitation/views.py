@@ -151,8 +151,6 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
             id_list.append(data[0])
             temp_dict[data[0]] = data[1]
         datas_two = Cp.objects.exclude(invitee=user.get('open_id'))
-        id_list = list()
-        temp_dict = dict()
         for data in datas_two:
             id_list.append(data.invitee)
             temp_dict[data.invitee] = data.count
