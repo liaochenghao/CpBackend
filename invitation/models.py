@@ -37,3 +37,12 @@ class UserRecord(models.Model):
 
     class Meta:
         db_table = "user_record"
+
+
+class Cp(models.Model):
+    id = models.AutoField('序列号', primary_key=True)
+    invitee = models.CharField('受邀请人编号', max_length=64)
+    count = models.IntegerField('受邀次数')
+
+    class Meta:
+        db_table = "cp"

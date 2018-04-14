@@ -2,7 +2,7 @@
 import uuid
 
 from rest_framework import serializers
-from invitation.models import Invitation, UserRecord
+from invitation.models import Invitation, UserRecord, Cp
 
 
 class InvitationSerializer(serializers.ModelSerializer):
@@ -23,3 +23,9 @@ class UserRecordSerializer(serializers.ModelSerializer):
         model = UserRecord
         fields = ['id', 'user_id', 'view_user_id', 'create_at', 'invite_status', 'invite_expire_at', 'invite_at']
         read_only_fields = ['id']
+
+
+class CpSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cp
+        fields = ['id', 'invitee', 'count']
