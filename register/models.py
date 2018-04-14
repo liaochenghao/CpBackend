@@ -19,7 +19,8 @@ class RegisterInfo(models.Model):
     CP_AGE = (
         (0, '比TA大'),
         (1, '跟TA一样'),
-        (2, '比TA小')
+        (2, '比TA小'),
+        (3, '无要求')
     )
     id = models.CharField('序列号', max_length=64, primary_key=True)
     nickname = models.CharField('活动昵称', max_length=64)
@@ -34,7 +35,7 @@ class RegisterInfo(models.Model):
     future_city = models.CharField('想就读的城市', max_length=64)
     future_school = models.CharField('想就读的学校', max_length=64)
     demand_area = models.CharField('区域选择', max_length=32)
-    demand_cp_age = models.IntegerField('对CP的年龄要求', choices=CP_AGE)
+    demand_cp_age = models.IntegerField('对CP的年龄要求', choices=CP_AGE, default=3)
     degree = models.CharField('学位', max_length=32)
     user = models.ForeignKey(User)
     avatar_url = models.CharField('用户微信头像地址', max_length=255, null=True)

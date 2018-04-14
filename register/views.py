@@ -115,22 +115,15 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
                 user_demand_sex = 1 if user_demand[0].sex == 0 else 0
             elif user_demand[0].sexual_orientation == 1:
                 user_demand_sex = user_demand[0].sex
-            # 对CP年龄的过滤
-            register_list = RegisterInfo.objects.filter(sex=user_demand_sex, tag=1).exclude(user_id__in=id_result_list)
-            if user_demand[0].demand_cp_age == 0:
-                register_list = register_list.filter(birthday__lt=user_demand[0].birthday)
-            elif user_demand[0].demand_cp_age == 1:
-                register_list = register_list.filter(birthday__year=user_demand[0].birthday.year)
-            else:
-                register_list = register_list.filter(birthday__gt=user_demand[0].birthday)
             # 从注册信息表中随机获取不在已邀请的用户列表中的用户
+            register_list = RegisterInfo.objects.filter(sex=user_demand_sex, tag=1).exclude(user_id__in=id_result_list)
             total = register_list.count()
             if total != 0:
+                logger.info('*' * 70)
+                logger.info('Get User From Real User')
                 seed = random.randint(0, total - 1)
-                logger.info('RegisterInfoView random seed: %s' % seed)
                 result = register_list[seed:seed + 1]
                 target_user = result[0]
-                logger.info('9999999999')
                 logger.info('target_user_id=%s' % target_user.user_id)
             else:
                 # 从僵尸用户中查找
@@ -138,25 +131,13 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
                 logger.info('Get User From Corpse')
                 register_list = RegisterInfo.objects.filter(sex=user_demand_sex, tag=0).exclude(
                     user_id__in=id_result_list)
-                if user_demand[0].demand_cp_age == 0:
-                    # 比CP年龄大
-                    register_list = register_list.filter(birthday__lt=user_demand[0].birthday)
-                elif user_demand[0].demand_cp_age == 1:
-                    # 比CP年龄小
-                    register_list = register_list.filter(birthday__year=user_demand[0].birthday.year)
-                else:
-                    # 跟CP年龄一样大，只判断年份一样
-                    register_list = register_list.filter(birthday__gt=user_demand[0].birthday)
                 total = register_list.count()
                 if total == 0:
                     raise exceptions.ValidationError('暂无匹配用户信息')
-                logger.info('RegisterInfoView total = %s' % total)
                 seed = random.randint(0, total - 1)
-                logger.info('RegisterInfoView random seed: %s' % seed)
                 result = register_list[seed:seed + 1]
                 if len(result) == 0:
                     raise exceptions.ValidationError('暂无匹配用户信息')
-                logger.info('随机获取到的用户ID= %s' % result[0].user_id)
                 target_user = result[0]
         user = User.objects.filter(open_id=target_user.user_id).first()
         data = RegisterInfoSerializer(target_user).data
@@ -168,12 +149,6 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         data['sex'] = '男' if data['sex'] == 1 else '女'
         if data['picture_url'] and str(data['picture_url']).find('https') == -1:
             data['picture_url'] = 'https://cp1.lxhelper.com/media' + data['picture_url']
-        if data['demand_cp_age'] == 0:
-            data['demand_cp_age'] = '比TA大'
-        elif data['demand_cp_age'] == 1:
-            data['demand_cp_age'] = '跟TA一样'
-        elif data['demand_cp_age'] == 2:
-            data['demand_cp_age'] = '比TA小'
         if data['sexual_orientation'] == 0:
             data['sexual_orientation'] = '异性'
         elif data['sexual_orientation'] == 1:
