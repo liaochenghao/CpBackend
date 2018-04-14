@@ -142,18 +142,18 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
         pageSize = request.query_params.get('pageSize', 10)
         start = pageSize * (pageNum - 1)
         end = pageSize * pageNum
-        # sql1 = """SELECT invitee,COUNT(*) as number from invitation where invitee != '%s' GROUP BY invitee ORDER BY number desc
-        #         limit %s, %s""" % (user.get('open_id'), start, end)
-        # datas = execute_custom_sql(sql1)
-        # id_list = list()
-        # temp_dict = dict()
-        # for data in datas:
-        #     id_list.append(data[0])
-        #     temp_dict[data[0]] = data[1]
-        datas = Cp.objects.exclude(invitee=user.get('open_id'))
+        sql1 = """SELECT invitee,COUNT(*) as number from invitation where invitee != '%s' GROUP BY invitee ORDER BY number desc
+                limit %s, %s""" % (user.get('open_id'), 0, 10)
+        datas_one = execute_custom_sql(sql1)
         id_list = list()
         temp_dict = dict()
-        for data in datas:
+        for data in datas_one:
+            id_list.append(data[0])
+            temp_dict[data[0]] = data[1]
+        datas_two = Cp.objects.exclude(invitee=user.get('open_id'))
+        id_list = list()
+        temp_dict = dict()
+        for data in datas_two:
             id_list.append(data.invitee)
             temp_dict[data.invitee] = data.count
         register_info = RegisterInfo.objects.filter(user_id__in=id_list)
