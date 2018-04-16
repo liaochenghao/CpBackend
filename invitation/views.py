@@ -120,6 +120,8 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
         temp = RegisterInfoSerializer(data).data
         temp['update_at'] = user.get('cp_time')
         temp['age'] = datetime.datetime.now().year - data.birthday.year
+        if temp['picture_url'] and str(temp['picture_url']).find('https') == -1:
+            temp['picture_url'] = 'https://cp1.lxhelper.com/media' + temp['picture_url']
         return Response(temp)
 
     @list_route(methods=['get'])
