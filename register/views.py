@@ -218,7 +218,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         if not target_user:
             raise exceptions.ValidationError('当前用户不存在')
         result = RegisterInfoSerializer(target_user).data
-        if result['picture_url']:
+        if result['picture_url'] and str(result['picture_url']).find('https') == -1:
             result['picture_url'] = 'https://cp1.lxhelper.com/media' + result['picture_url']
         result['age'] = datetime.datetime.now().year - int(result['birthday'][:4])
         return Response(result)
