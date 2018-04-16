@@ -133,7 +133,7 @@ class UserTaskResultView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixin
             raise serializers.ValidationError('参数task_id不能为空')
         if not user.get('cp_user_id'):
             raise serializers.ValidationError('当前用户暂无CP信息')
-        result = UserTaskResult.objects.filter(user_id=user.get('cp_user_id'))
+        result = UserTaskResult.objects.filter(user_id=user.get('cp_user_id'), task_id=task_id)
         return Response(True if result else False)
 
 
