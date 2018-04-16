@@ -220,6 +220,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         result = RegisterInfoSerializer(target_user).data
         if result['picture_url']:
             result['picture_url'] = 'https://cp1.lxhelper.com/media' + result['picture_url']
+        result['age'] = datetime.datetime.now().year - int(result['birthday'][:4])
         return Response(result)
 
 
