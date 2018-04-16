@@ -217,7 +217,10 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         target_user = RegisterInfo.objects.filter(user_id=params.get('user_id')).first()
         if not target_user:
             raise exceptions.ValidationError('当前用户不存在')
-        return Response(RegisterInfoSerializer(target_user).data)
+        result = RegisterInfoSerializer(target_user).data
+        if result['picture_url']:
+            result['picture_url'] = 'https://cp1.lxhelper.com/media' + result['picture_url']
+        return Response()
 
 
 class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
