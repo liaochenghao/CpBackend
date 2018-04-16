@@ -54,4 +54,4 @@
 - [查看当前用户是否已提交任务](docs/task/check_result.md)
 - [查看用户是否关联相关公众号](docs/register/check_attend.md)
 - [获取报名人数](docs/register/get_attend_number.md)
-
+- [通过用户编号获取用户注册信息](docs/register/detail.md)

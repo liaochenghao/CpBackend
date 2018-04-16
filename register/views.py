@@ -110,13 +110,14 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
             id_result_list.append(user_info.get('open_id'))
             user_demand = RegisterInfo.objects.filter(user_id=user_info.get('open_id'))
             # 对CP性别的过滤
-            user_demand_sex = None
+            user_demand_sex = [0, 1]
             if user_demand[0].sexual_orientation == 0:
-                user_demand_sex = 1 if user_demand[0].sex == 0 else 0
+                user_demand_sex = [1] if user_demand[0].sex == 0 else [0]
             elif user_demand[0].sexual_orientation == 1:
-                user_demand_sex = user_demand[0].sex
+                user_demand_sex = [0] if user_demand[0].sex == 0 else [1]
             # 从注册信息表中随机获取不在已邀请的用户列表中的用户
-            register_list = RegisterInfo.objects.filter(sex=user_demand_sex, tag=1).exclude(user_id__in=id_result_list)
+            register_list = RegisterInfo.objects.filter(sex__in=user_demand_sex, tag=1).exclude(
+                user_id__in=id_result_list)
             total = register_list.count()
             if total != 0:
                 logger.info('*' * 70)
@@ -129,7 +130,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
                 # 从僵尸用户中查找
                 logger.info('*' * 70)
                 logger.info('Get User From Corpse')
-                register_list = RegisterInfo.objects.filter(sex=user_demand_sex, tag=0).exclude(
+                register_list = RegisterInfo.objects.filter(sex__in=user_demand_sex, tag=0).exclude(
                     user_id__in=id_result_list)
                 total = register_list.count()
                 if total == 0:
@@ -207,6 +208,16 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         except exceptions as e:
             logger.info(e + "")
             return HttpResponse(json.dumps({'code': -1, 'data': '图片上传失败'}))
+
+    @list_route(methods=['get'])
+    def by_user(self, request):
+        params = request.query_params
+        if not params.get('user_id'):
+            raise exceptions.ValidationError('参数user_id不能为空')
+        target_user = RegisterInfo.objects.filter(user_id=params.get('user_id')).first()
+        if not target_user:
+            raise exceptions.ValidationError('当前用户不存在')
+        return Response(RegisterInfoSerializer(target_user).data)
 
 
 class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
