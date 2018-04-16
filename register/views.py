@@ -220,7 +220,7 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
         result = RegisterInfoSerializer(target_user).data
         if result['picture_url']:
             result['picture_url'] = 'https://cp1.lxhelper.com/media' + result['picture_url']
-        return Response()
+        return Response(result)
 
 
 class RegisterView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.ListModelMixin,
