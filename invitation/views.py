@@ -222,7 +222,7 @@ class UserRecordView(viewsets.GenericViewSet, mixins.ListModelMixin):
         start = pageSize * (pageNum - 1)
         end = pageSize * pageNum
         sql = """select A.view_user_id, A.create_at,A.invite_at, A.invite_status,A.invite_expire_at,B.nickname,B.sex, B.avatar_url 
-from user_record A, register_info B where A.view_user_id=B.user_id AND A.user_id='%s' limit %s, %s""" % (
+from user_record A, register_info B where A.view_user_id=B.user_id AND A.user_id='%s' ORDER BY A.create_at DESC limit %s, %s""" % (
             user.get('open_id'), start, end)
         datas = execute_custom_sql(sql)
         return Response(self.wrapper(datas))
