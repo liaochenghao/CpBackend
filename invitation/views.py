@@ -205,7 +205,7 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
             raise serializers.ValidationError('参数 nickname 不能为空')
         inviter = User.objects.filter(code=code)
         if not inviter:
-            raise serializers.ValidationError('邀请码无结果哦，快检查是不是输错啦。小哥哥小姐姐还在等待这枚New币解锁呢！')
+            raise serializers.ValidationError('邀请码无结果哦，快检查是不是输错啦。小哥哥小姐姐还在等待这枚New币解锁呢！回复「CP」，一起参与该活动，解锁你的小哥哥和小姐姐吧。')
         NewCornCompute.compute_new_corn(inviter[0].open_id, type, other_open_id, nickname)
         return Response()
 

@@ -45,7 +45,7 @@ class NewCornCompute:
                                                  balance=corn + balance, corn=corn, extra=extra,
                                                  other_open_id=other_open_id, nickname=nickname)
                 else:
-                    raise exceptions.ValidationError('当前用户已获得New币')
+                    raise exceptions.ValidationError('你已经帮邀请码领取New币咯，不能重复领取。回复「CP」，一起参与该活动，解锁你的小哥哥和小姐姐吧。')
         # 每日登陆的逻辑处理
         elif operation == 3:
             start_date = datetime.datetime.now()
