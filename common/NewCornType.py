@@ -24,4 +24,6 @@ class NewCornType(Enum):
     PRE_ACTIVITY = 8
     # 系统赠送
     SYS_DONATE = 9
+    # 活动赠送
+    ACTIVITY_DONATE = 10
 

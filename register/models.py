@@ -67,7 +67,12 @@ class NewCornRecord(models.Model):
         (3, '每日登陆'),
         (4, '活动报名'),
         (5, '接受用户邀请'),
-        (6, '切换用户')
+        (6, '切换用户'),
+        (7, '邀请用户报名'),
+        (8, '预报名活动'),
+        (9, '系统赠送'),
+        (10, '活动赠送')
+
     )
     id = models.CharField('序列号', max_length=64, primary_key=True)
     user = models.ForeignKey(User, db_index=True)
@@ -78,6 +83,7 @@ class NewCornRecord(models.Model):
     extra = models.CharField('备注说明', max_length=64, null=True)
     other_open_id = models.CharField('其他公众号的ID', max_length=64, null=True)
     nickname = models.CharField('用户昵称', max_length=64, null=True)
+    coupon = models.CharField('优惠券码', max_length=32, null=True)
 
     class Meta:
         db_table = "new_corn_record"

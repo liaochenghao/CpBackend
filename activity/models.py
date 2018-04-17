@@ -14,3 +14,14 @@ class Activity(models.Model):
 
     class Meta:
         db_table = "activity"
+
+
+class Coupon(models.Model):
+    id = models.CharField('序列号', max_length=64, primary_key=True)
+    code = models.CharField('活动优惠码', max_length=64)
+    corn = models.IntegerField('New币数量')
+    extra = models.CharField('描述', null=True, max_length=255)
+    create_at = models.DateTimeField('创建时间', auto_now_add=True, null=True)
+
+    class Meta:
+        db_table = "coupon"

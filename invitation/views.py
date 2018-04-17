@@ -178,9 +178,9 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
                 temp_dict[basic_list[0]] = basic_list[1]
         for data in result:
             data['status'] = temp_dict.get(data['user_id'], -1)
-        for i in range(len(result)-1):
+        for i in range(len(result) - 1):
             index = i
-            for j in range(i+1, len(result)):
+            for j in range(i + 1, len(result)):
                 if result[index].get('total') < result[j].get('total'):
                     index = j
             result[i], result[index] = result[index], result[i]
@@ -235,7 +235,8 @@ from user_record A, register_info B where A.view_user_id=B.user_id AND A.user_id
         for data in datas:
             info = dict()
             info['view_user_id'] = data[0]
-            info['create_at'] = time.mktime(time.strptime(str(data[1])[:str(data[1]).find('.')], "%Y-%m-%d %H:%M:%S")) if data[1] else data[1]
+            info['create_at'] = time.mktime(
+                time.strptime(str(data[1])[:str(data[1]).find('.')], "%Y-%m-%d %H:%M:%S")) if data[1] else data[1]
             info['invite_at'] = time.mktime(time.strptime(str(data[2]), "%Y-%m-%d %H:%M:%S")) if data[2] else data[2]
             info['invite_status'] = data[3]
             info['invite_expire_at'] = data[4]
