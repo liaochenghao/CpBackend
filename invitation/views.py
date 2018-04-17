@@ -1,4 +1,5 @@
 import datetime
+import time
 from django.db import transaction
 from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import list_route
@@ -235,7 +236,7 @@ from user_record A, register_info B where A.view_user_id=B.user_id AND A.user_id
             info = dict()
             info['view_user_id'] = data[0]
             info['create_at'] = data[1]
-            info['invite_at'] = str(data[2]) + '.468844' if data[2] else data[2]
+            info['invite_at'] = time.mktime(time.strptime(str(data[2]), "%Y-%m-%d %H:%M:%S")) if data[2] else data[2]
             info['invite_status'] = data[3]
             info['invite_expire_at'] = data[4]
             info['nickname'] = data[5]
