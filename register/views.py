@@ -118,6 +118,9 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
             # 从注册信息表中随机获取不在已邀请的用户列表中的用户
             register_list = RegisterInfo.objects.filter(sex__in=user_demand_sex, tag=1).exclude(
                 user_id__in=id_result_list)
+            # 如果是同性，则需要精准匹配
+            if user_demand[0].sexual_orientation == 1:
+                register_list = register_list.filter(sexual_orientation=1)
             total = register_list.count()
             if total != 0:
                 logger.info('*' * 70)
@@ -132,6 +135,8 @@ class RegisterInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.
                 logger.info('Get User From Corpse')
                 register_list = RegisterInfo.objects.filter(sex__in=user_demand_sex, tag=0).exclude(
                     user_id__in=id_result_list)
+                if user_demand[0].sexual_orientation == 1:
+                    register_list = register_list.filter(sexual_orientation=1)
                 total = register_list.count()
                 if total == 0:
                     raise exceptions.ValidationError('暂无匹配用户信息')
