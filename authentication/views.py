@@ -81,3 +81,17 @@ class UserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         result['sex'] = register_info[0].sex if register_info else user.get('gender')
         result['activity_code'] = user.get('code')
         return Response(result)
+
+    @list_route(['get'])
+    def cp(self, request):
+        params = request.query_params
+        nickname = params.get('nickname')
+        if not nickname:
+            raise serializers.ValidationError('参数nickname不能为空')
+        user = User.objects.filter(nick_name=nickname).first()
+        if not user:
+            raise serializers.ValidationError('您还未参加CP活动哦')
+        if not user.cp_user_id:
+            raise serializers.ValidationError('您还未匹配到CP哦')
+        register_info_cp = RegisterInfo.objects.filter(user_id=user.cp_user_id).first()
+        return Response(register_info_cp.wechat)
