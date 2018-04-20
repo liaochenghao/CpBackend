@@ -57,12 +57,14 @@ class CornView(APIView):
         if not all((coupon, other_open_id, nickname)):
             raise serializers.ValidationError('参数(coupon, other_open_id, nickname)均不能为空')
         coupon = Coupon.objects.filter(code=coupon).first()
+        if not coupon:
+            raise serializers.ValidationError('您的优惠券码无效哦')
         user = User.objects.filter(nick_name=nickname).first()
         if not user:
             raise serializers.ValidationError('您还未报名参加CP活动馆哦')
         new_corn_record = NewCornRecord.objects.filter(operation=NewCornType.ACTIVITY_DONATE.value,
                                                        other_open_id=other_open_id, nickname=nickname,
-                                                       coupon=coupon).first()
+                                                       coupon=coupon.code).first()
         if new_corn_record:
             raise serializers.ValidationError('您已使用过优惠券哦')
         balance_record = NewCornRecord.objects.filter(user_id=user.open_id).latest('create_at')
@@ -70,7 +72,7 @@ class CornView(APIView):
                                      operation=NewCornType.ACTIVITY_DONATE.value,
                                      corn=coupon.corn, balance=balance_record.balance + coupon.corn,
                                      extra='优惠券' + coupon.code + '赠送',
-                                     other_open_id=other_open_id, nickname=nickname, coupon=coupon)
+                                     other_open_id=other_open_id, nickname=nickname, coupon=coupon.code)
         return Response('优惠券使用成功，您已成功获得' + str(coupon.corn) + 'New币')
 
 
