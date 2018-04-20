@@ -2,8 +2,8 @@ import uuid
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from activity.models import Activity, Coupon
-from activity.serializers import ActivitySerializer
+from activity.models import Activity, Coupon, Notice
+from activity.serializers import ActivitySerializer, NoticeSerializer
 from rest_framework import exceptions, serializers
 
 from authentication.models import User
@@ -74,6 +74,16 @@ class CornView(APIView):
                                      extra='优惠券' + coupon.code + '赠送',
                                      other_open_id=other_open_id, nickname=nickname, coupon=coupon.code)
         return Response('优惠券使用成功，您已成功获得' + str(coupon.corn) + 'New币')
+
+
+class NoticeView(APIView):
+    def get(self, request):
+        params = request.query_params
+        notice_id = params.get('notice_id')
+        if not notice_id:
+            raise serializers.ValidationError('参数notice_id不能为空')
+        notice = Notice.objects.filter(id=notice_id).first()
+        return Response(NoticeSerializer(notice).data)
 
 
 class TestView(APIView):

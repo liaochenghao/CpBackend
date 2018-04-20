@@ -25,3 +25,18 @@ class Coupon(models.Model):
 
     class Meta:
         db_table = "coupon"
+
+
+class Notice(models.Model):
+    id = models.AutoField('序列号', primary_key=True)
+    title = models.CharField('公告标题', max_length=64)
+    instruction = models.CharField('公告说明', max_length=255, null=True)
+    content_one = models.CharField('公告内容', max_length=255, null=True)
+    content_two = models.CharField('公告内容', max_length=255, null=True)
+    content_three = models.CharField('公告内容', max_length=255, null=True)
+    content_four = models.CharField('公告内容', max_length=255, null=True)
+    extra = models.CharField('扩展信息', max_length=255, null=True)
+    create_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    class Meta:
+        db_table = "notice"
