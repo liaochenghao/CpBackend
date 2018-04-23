@@ -3,8 +3,10 @@ import datetime
 import json
 import logging
 import random
+
 import requests
 from rest_framework import exceptions
+
 from CpBackend.settings import WX_SMART_CONFIG
 from authentication.models import User
 from ticket.functions import TicketAuthorize
@@ -53,5 +55,41 @@ class WxInterface:
             logger.info('微信认证异常 code_authorize response: %s' % response.text)
             raise exceptions.ValidationError('微信认证异常： %s' % json.dumps(res))
 
+    # 调用微信接口向用户发送客服文本消息
+    def send_customer_message(self, to_user, text, access_token):
+        url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + access_token
+        params = {
+            "touser": to_user,
+            "msgtype": "text",
+            "text": {
+                "content": text
+            }
+        }
+        response = requests.post(url=url, params=params, verify=False)
+        if response.status_code != 200:
+            logger.info('WxInterface code_authorize response: %s' % response.text)
+            raise exceptions.ValidationError('连接微信服务器异常')
+        res = response.json()
+        logger.info('8'*70)
+        logger.info(res)
+        logger.info('8' * 70)
+        return
+
+    def get_access_token(self):
+        url = "https://api.weixin.qq.com/cgi-bin/token"
+        params = {
+            'appid': self.appid,
+            'secret': self.secret,
+            'grant_type': 'client_credential'
+        }
+        response = requests.get(url=url, params=params, verify=False)
+        if response.status_code != 200:
+            logger.info('WxInterface code_authorize response: %s' % response.text)
+            raise exceptions.ValidationError('连接微信服务器异常')
+        res = response.json()
+        logger.info('8' * 70)
+        logger.info(res)
+        logger.info('8' * 70)
+        return res['access_token']
 
 WxInterfaceUtil = WxInterface()

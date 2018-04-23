@@ -15,6 +15,7 @@ from redis_tool.redis_server import redis_client
 from register.models import RegisterInfo
 from register.serializer import RegisterInfoSerializer
 from common.NewCornType import NewCornType
+from utils.weixin_functions import WxInterfaceUtil
 
 logger = logging.getLogger('django')
 
@@ -70,6 +71,8 @@ invitation LEFT JOIN register_info  ON invitation.invitee = register_info.user_i
         UserRecord.objects.filter(user_id=user.get('open_id'), view_user_id=params.get('invitee')).update(
             invite_status=0, invite_expire_at=request.data['expire_at'], invite_at=request.data['create_time'])
         NewCornCompute.compute_new_corn(user.get('open_id'), NewCornType.INVITE_USERS.value)
+        access_token = WxInterfaceUtil.get_access_token()
+        WxInterfaceUtil.send_customer_message(params.get('invitee'), 'helloworld', access_token)
         return Response()
 
     @transaction.atomic
