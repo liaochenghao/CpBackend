@@ -1,7 +1,7 @@
 # coding: utf-8
 import datetime
 from secrets import token_hex
-from redis_tool.redis_server import redis_client
+from utils.redis_server import redis_client
 from ticket.sql import ticket_sql
 import logging
 

@@ -2,9 +2,9 @@
 import json
 from django.utils.deprecation import MiddlewareMixin
 from django.http.response import HttpResponse
-from authentication.models import User
-from authentication.serializers import UserSerializer
-from redis_tool.redis_server import redis_client
+from user_info.models import UserInfo
+from user_info.serializers import UserInfoSerializer
+from utils.redis_server import redis_client
 from CpBackend.settings import ignore_auth_urls
 from ticket.functions import TicketAuthorize
 import logging
@@ -18,7 +18,8 @@ class AuthMiddleware(MiddlewareMixin):
         url_path = request.path
         if url_path in ignore_auth_urls:
             return
-        logger.info('Auth Url: %s' % url_path)
+        method = request.method
+        logger.info('Auth Url ----> %s' % (method + ':  ' + url_path))
         # ticket = request.COOKIES.get('ticket')
         # if not ticket:
         #     data = request.GET.dict()
@@ -35,8 +36,8 @@ class AuthMiddleware(MiddlewareMixin):
                                 content_type='application/json')
         if not redis_client.get_instance(key=auth_res['user_id']):
             logger.info('Get User Info From DataBase')
-            user = User.objects.filter(open_id=auth_res['user_id']).first()
-            serializer = UserSerializer(user)
+            user = UserInfo.objects.filter(open_id=auth_res['user_id']).first()
+            serializer = UserInfoSerializer(user)
             user_info = serializer.data
             redis_client.set_instance(auth_res['user_id'], serializer.data)
         else:

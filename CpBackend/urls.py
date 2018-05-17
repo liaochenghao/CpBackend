@@ -18,9 +18,5 @@ from django.conf.urls import url, include
 
 urlpatterns = [
     url(r'admin/', admin.site.urls),
-    url(r'^api/v1/', include('authentication.urls')),
-    url(r'^api/v1/', include('activity.urls')),
-    url(r'^api/v1/', include('register.urls')),
-    url(r'^api/v1/', include('invitation.urls')),
-    url(r'^api/v1/', include('task.urls')),
+    url(r'^api/v1/', include('user_info.urls')),
 ]

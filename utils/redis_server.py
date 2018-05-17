@@ -1,8 +1,8 @@
 # coding: utf-8
-from CpBackend.settings import REDIS_CONFIG
 import redis
+from CpBackend.settings import REDIS_CONFIG
 
-redis_valid_time = 2*60*60
+redis_valid_time = 60 * 60
 
 
 class RedisClient:
@@ -31,5 +31,6 @@ class RedisClient:
     def delete(self, key):
         self.redis_client.delete(key)
         return
+
 
 redis_client = RedisClient()

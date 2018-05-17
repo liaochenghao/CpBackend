@@ -25,12 +25,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'activity',
-    'authentication',
+    'user_info',
     'ticket',
-    'register',
-    'invitation',
-    'task',
 ]
 
 MIDDLEWARE = [
@@ -136,7 +132,7 @@ DATABASES = {
         'NAME': 'cp_backend',
         'USER': 'root',
         'PASSWORD': 'Qwe=-00.3690',
-        'HOST': 'localhost',
+        'HOST': '47.92.27.75',
         'PORT': 3306,
         'CHARSET': 'UTF-8',
         'ATOMIC_REQUESTS': True,
