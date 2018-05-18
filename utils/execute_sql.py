@@ -2,13 +2,6 @@
 from django.db import connection
 
 
-def execute_custom_sql(sql):
-    cursor = connection.cursor()
-    cursor.execute(sql)
-    rows = cursor.fetchall()
-    return rows
-
-
 def dict_fetchall(sql):
     cursor = connection.cursor()
     """将游标返回的结果保存到一个字典对象中"""

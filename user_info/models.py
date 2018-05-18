@@ -3,7 +3,7 @@ from django.db import models
 
 
 class UserInfo(models.Model):
-    openid = models.CharField('open_id', max_length=64, primary_key=True)
+    openid = models.CharField('openid', max_length=64, primary_key=True)
     nickname = models.CharField('微信昵称', max_length=64, null=True)
     GENDER = (
         (0, '未知'),
