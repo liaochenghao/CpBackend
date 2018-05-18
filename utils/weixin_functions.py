@@ -22,7 +22,6 @@ class WxInterface:
 
     # 微信code认证
     def code_authorize(self, code):
-        logger.info('=' * 25 + 'code_authorize' + '=' * 25)
         url = "https://api.weixin.qq.com/sns/jscode2session"
         params = {
             'appid': self.appid,
