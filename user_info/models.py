@@ -60,3 +60,35 @@ class UserFormId(models.Model):
     class Meta:
         db_table = 'user_form_id'
         ordering = ['-create_at']
+
+
+class UserInfoDetail(models.Model):
+
+    GENDER = (
+        (1, '男'),
+        (2, '女')
+    )
+
+    SEXUAL_ORIENTATION = (
+        (1, '异性'),
+        (2, '同性')
+    )
+
+    STATUS = (
+        (1, '准留学生'),
+        (2, '留学生'),
+        (3, '毕业生')
+    )
+
+    user = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
+    gender = models.IntegerField('性别', choices=GENDER, default=1)
+    sexual = models.IntegerField('性取向', choices=SEXUAL_ORIENTATION, default=1)
+    birthday = models.DateField('生日')
+    age = models.IntegerField('年龄')
+    constellation = models.CharField('星座', max_length=20)
+    status = models.IntegerField('留学状态', choices=STATUS, default=1)
+    create_at = models.DateTimeField('创建时间', auto_now_add=True, null=True)
+
+    class Meta:
+        db_table = 'user_info_detail'
+        ordering = ['-create_at']

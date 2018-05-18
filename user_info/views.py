@@ -10,7 +10,12 @@ from user_info.models import UserInfo
 from user_info.serializers import UserInfoSerializer
 from user_info.models import UserFormId
 from utils.WXBizDataCrypt import WXBizDataCrypt
+from utils.redis_server import redis_client
 from utils.weixin_functions import WxInterfaceUtil
+
+from user_info.models import UserInfoDetail
+from user_info.serializers import UserInfoDetailSerializer
+
 import logging
 
 logger = logging.getLogger('django')
@@ -78,3 +83,16 @@ class UserInfoView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         UserFormId.objects.create(user_id=openid, form_id=formid,
                                   expire_time=datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(days=+7))
         return Response()
+
+
+class UserInfoDetailView(mixins.ListModelMixin,
+                         mixins.DestroyModelMixin,
+                         mixins.CreateModelMixin,
+                         mixins.UpdateModelMixin,
+                         mixins.RetrieveModelMixin,
+                         viewsets.GenericViewSet
+                         ):
+    queryset = UserInfoDetail.objects.all()
+    serializer_class = UserInfoDetailSerializer
+
+
